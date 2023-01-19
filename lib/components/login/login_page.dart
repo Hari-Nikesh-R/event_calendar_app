@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sece_event_calendar/components/home/home_page.dart';
+import 'package:sece_event_calendar/components/login/signup_page.dart';
 import 'package:sece_event_calendar/dls/custombutton.dart';
 import 'package:sece_event_calendar/dls/customedittext.dart';
 
@@ -93,7 +94,9 @@ class _LoginPageState extends State<LoginPage> {
                       fontSize: 18,
                     ),),
                     GestureDetector(
-                      onTap: (){},
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpPage()));
+                      },
                       child: const Text(" Sign Up", style: TextStyle(
                         color: Colors.blueAccent,
                         fontSize: 16,
