@@ -76,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide:const BorderSide(
-                              color: Colors.black
+                              color: Colors.blue
                           )
                       )
                   ),
