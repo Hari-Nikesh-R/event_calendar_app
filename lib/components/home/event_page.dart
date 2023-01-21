@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sece_event_calendar/dls/custombutton.dart';
 import 'package:sece_event_calendar/dls/customedittext.dart';
-import 'package:sece_event_calendar/dls/customtext.dart';
-import 'package:sece_event_calendar/utils/colors.dart';
 
 class EventPage extends StatefulWidget {
   const EventPage({Key? key}) : super(key: key);
@@ -12,8 +10,125 @@ class EventPage extends StatefulWidget {
 }
 
 class _EventPageState extends State<EventPage> {
-
   bool notifyAll = true;
+  String currentDate = "-";
+  String endDate = "-";
+  DateTime? selectedStartDate;
+  DateTime? selectedEndDate;
+  TimeOfDay selectedStartTime = TimeOfDay.now();
+  TimeOfDay selectedEndTime = TimeOfDay.now();
+
+  String currentTime = "-";
+
+  Future<void> selectStartTime() async{
+    final TimeOfDay? pickedS = await showTimePicker(
+        context: context,
+        initialTime: selectedStartTime, builder: ( context, child) {
+      return MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        child: child!,
+      );});
+
+    if (pickedS != null && pickedS != selectedStartTime ) {
+      setState(() {
+        selectedStartTime = pickedS;
+      });
+    }
+  }
+
+  Future<void> selectEndTime() async{
+    final TimeOfDay? pickedS = await showTimePicker(
+        context: context,
+        initialTime: selectedEndTime, builder: ( context, child) {
+      return MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        child: child!,
+      );});
+
+    if (pickedS != null && pickedS != selectedEndTime ) {
+      setState(() {
+        selectedEndTime = pickedS;
+      });
+    }
+  }
+
+  void selectStartDate() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2015, 8),
+      lastDate: DateTime(2101),
+    ).then((value) {
+      setState(() {
+        if(value!=null) {
+          selectedStartDate = value;
+          currentDate = selectedStartDate?.day.toString().length == 1?
+          "0${selectedStartDate?.day
+              .toString()}-${selectedStartDate?.month.toString().padLeft(
+              2, '0')}-${selectedStartDate?.year.toString().padLeft(2, '0')}":
+          "${selectedStartDate?.day
+              .toString()}-${selectedStartDate?.month.toString().padLeft(
+              2, '0')}-${selectedStartDate?.year.toString().padLeft(2, '0')}";
+        }
+        if(currentDate == "null-null-null")
+        {
+          currentDate = "";
+        }
+      });
+    });
+  }
+
+  void selectEndDate() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2015, 8),
+      lastDate: DateTime(2101),
+    ).then((value) {
+      setState(() {
+        if(value!=null) {
+          selectedEndDate = value;
+          endDate = selectedEndDate?.day.toString().length == 1? "0${selectedEndDate?.day
+              .toString()}-${selectedEndDate?.month.toString().padLeft(
+              2, '0')}-${selectedEndDate?.year.toString().padLeft(2, '0')}":
+          "${selectedEndDate?.day
+              .toString()}-${selectedEndDate?.month.toString().padLeft(
+              2, '0')}-${selectedEndDate?.year.toString().padLeft(2, '0')}";
+        }
+        if(endDate == "null-null-null")
+        {
+          currentDate = "";
+        }
+      });
+    });
+  }
+
+  bool compareStartEndDate(){
+    //todo: Validate Start Time and End Time
+    return true;
+  }
+
+  @override
+  void initState() {
+    selectedEndTime = TimeOfDay.now();
+    selectedStartTime = TimeOfDay.now();
+    selectedStartDate = DateTime.now();
+    selectedEndDate = DateTime.now();
+    currentDate = selectedStartDate?.day.toString().length == 1?
+    "0${selectedStartDate?.day
+        .toString()}-${selectedStartDate?.month.toString().padLeft(
+        2, '0')}-${selectedStartDate?.year.toString().padLeft(2, '0')}":
+    "${selectedStartDate?.day
+        .toString()}-${selectedStartDate?.month.toString().padLeft(
+        2, '0')}-${selectedStartDate?.year.toString().padLeft(2, '0')}";
+    endDate = selectedEndDate?.day.toString().length == 1? "0${selectedEndDate?.day
+        .toString()}-${selectedEndDate?.month.toString().padLeft(
+        2, '0')}-${selectedEndDate?.year.toString().padLeft(2, '0')}":
+    "${selectedEndDate?.day
+        .toString()}-${selectedEndDate?.month.toString().padLeft(
+        2, '0')}-${selectedEndDate?.year.toString().padLeft(2, '0')}";
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,35 +175,142 @@ class _EventPageState extends State<EventPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     color: Colors.white,
-                    child: Column(
+                    child: Padding(padding: const EdgeInsets.all(8),child:Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Row(
+                        //   children: [
+                        //     const Padding(padding: EdgeInsets.all(16), child: Icon(Icons.access_time, color: Colors.black, size: 30,)),
+                        //     const Text("Day, Date", style: TextStyle(
+                        //       color: Colors.black,
+                        //       fontWeight: FontWeight.bold,
+                        //       fontSize: 16
+                        //     ),),
+                        //     Padding(padding: EdgeInsets.only(right: MediaQuery.of(context).size.width/2.5)),
+                        //    const Text("Time", style: TextStyle(
+                        //         color: Colors.black,
+                        //         fontWeight: FontWeight.bold,
+                        //         fontSize: 16
+                        //     ),)
+                        //   ],
+                        // ),
+                        const Padding(padding: EdgeInsets.all(6), child: Icon(Icons.access_time, color: Colors.black, size: 30,)),
                         Row(
                           children: [
-                            const Padding(padding: EdgeInsets.all(16), child: Icon(Icons.access_time, color: Colors.black, size: 30,)),
-                            const Text("Day, Date", style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16
-                            ),),
-                            Padding(padding: EdgeInsets.only(right: MediaQuery.of(context).size.width/2.5)),
-                           const Text("Time", style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16
-                            ),)
+                            const Padding(padding: EdgeInsets.all(6), child: Text("From: ")),
+                            GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    selectStartDate();
+                                  });
+                                },
+                                child:Card(
+                                  elevation: 12,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: Padding(padding:const EdgeInsets.all(12),
+                                      child: Text(
+                                        currentDate,
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                            fontSize: 18
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      )),
+                                )),
+                            GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    selectStartTime();
+                                  });
+                                },
+                                child: Padding(padding:const EdgeInsets.only(left: 32),child:Card(
+                                  elevation: 12,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: Padding(padding:const EdgeInsets.all(12),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            selectedStartTime.hour.toString().length == 1?
+                                            "0${selectedStartTime.hour}:${selectedStartTime.minute}":
+                                            "${selectedStartTime.hour}:${selectedStartTime.minute}",
+                                            maxLines: 1,
+                                            style: const TextStyle(
+                                                fontSize: 18
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          const Padding(padding: EdgeInsets.only(right: 6)),
+                                          const Icon(Icons.more_time_sharp,size: 25, color: Colors.black,)
+                                        ],
+                                      )),
+                                ))),
+
                           ],
                         ),
                         Row(
-                          // todo: Date picker and Time Picker
-                        ),
-                        Row(
-                          // todo: Date picker and Time Picker
+                          children: [
+                            const Padding(padding: EdgeInsets.all(16), child: Text("To:")),
+                            GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    selectEndDate();
+                                  });
+                                },
+                                child:Card(
+                                  elevation: 12,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: Padding(padding:const EdgeInsets.all(12),
+                                      child: Text(
+                                        endDate,
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                            fontSize: 18
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      )),
+                                )),
+                            GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    selectEndTime();
+                                  });
+                                },
+                                child: Padding(padding:const EdgeInsets.only(left: 32),child:Card(
+                                  elevation: 12,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: Padding(padding:const EdgeInsets.all(12),
+                                      child: Row(
+                                        children: [
+                                      Text(
+                                        selectedEndTime.hour.toString().length == 1?
+                                        "0${selectedEndTime.hour}:${selectedEndTime.minute}":
+                                        "${selectedEndTime.hour}:${selectedEndTime.minute}",
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                            fontSize: 18
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                        const Padding(padding: EdgeInsets.only(right: 6)),
+                                          const Icon(Icons.more_time_sharp,size: 25, color: Colors.black,)
+                                        ],
+                                      )
+                                )))),
+
+                          ],
                         )
                       ],
                     ),
-                  ))),
+                  )))),
                   const CustomEditText(hintText: "Add Location", sufficeIcon: Icon(Icons.location_on, color: Colors.black,size: 25,),),
                   Row(
                     children: [
@@ -98,7 +320,6 @@ class _EventPageState extends State<EventPage> {
                             notifyAll = value!;
                           });
                       }),
-
                       const Text("Notify All", style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black,fontSize: 20),)
                     ],
                   ),
