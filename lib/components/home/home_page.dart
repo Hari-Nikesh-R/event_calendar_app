@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
            },
          ),
          home: Scaffold(
-           floatingActionButton: FloatingActionButton(onPressed: (){
+           floatingActionButton: FloatingActionButton(heroTag: "create", onPressed: (){
            Navigator.push(context, MaterialPageRoute(builder: (context) =>const EventPage()));
              },
              backgroundColor: THEME_COLOR,
@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                     Padding(padding: const EdgeInsets.all(16),child:
                         Row(
                           children: [
-                      FloatingActionButton(backgroundColor: THEME_COLOR,onPressed: (){
+                      FloatingActionButton(heroTag: "menu",backgroundColor: THEME_COLOR,onPressed: (){
                         setState(() {
                           toggleMenu = !toggleMenu;
                         });
@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                             Visibility(
                                 visible: toggleMenu,
                                 child:
-                            FloatingActionButton(backgroundColor: THEME_COLOR,onPressed: (){
+                            FloatingActionButton(heroTag: "calendar",backgroundColor: THEME_COLOR,onPressed: (){
                                 if(view%3 == 0) {
                                     setState(() {
                                       calendarView = WEEK_VIEW;
@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                             const Padding(padding: EdgeInsets.only(right: 12)),
                             Visibility(visible:toggleMenu,
                                 child:
-                            FloatingActionButton(backgroundColor: THEME_COLOR,onPressed: (){
+                            FloatingActionButton(heroTag:"profile",backgroundColor: THEME_COLOR,onPressed: (){
                             },child: const Icon(Icons.person_outline))),
                           ]
                         )),),

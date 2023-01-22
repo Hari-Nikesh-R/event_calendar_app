@@ -11,6 +11,7 @@ class EventPage extends StatefulWidget {
 
 class _EventPageState extends State<EventPage> {
   bool notifyAll = true;
+  bool notifyIndividual = true;
   String currentDate = "-";
   String endDate = "-";
   DateTime? selectedStartDate;
@@ -50,12 +51,13 @@ class _EventPageState extends State<EventPage> {
         selectedEndTime = pickedS;
       });
     }
+    compareStartEndTime();
   }
 
   void selectStartDate() {
     showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: selectedStartDate!,
       firstDate: DateTime(2015, 8),
       lastDate: DateTime(2101),
     ).then((value) {
@@ -81,7 +83,7 @@ class _EventPageState extends State<EventPage> {
   void selectEndDate() {
     showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: selectedEndDate!,
       firstDate: DateTime(2015, 8),
       lastDate: DateTime(2101),
     ).then((value) {
@@ -99,13 +101,53 @@ class _EventPageState extends State<EventPage> {
         {
           currentDate = "";
         }
+        compareStartEndDate();
       });
     });
   }
 
+
+  void changeSelectedDateTime(){
+    selectedEndDate = selectedStartDate;
+    selectedEndTime = selectedStartTime;
+    endDate = selectedEndDate?.day.toString().length == 1? "0${selectedEndDate?.day
+        .toString()}-${selectedEndDate?.month.toString().padLeft(
+        2, '0')}-${selectedEndDate?.year.toString().padLeft(2, '0')}":
+    "${selectedEndDate?.day
+        .toString()}-${selectedEndDate?.month.toString().padLeft(
+        2, '0')}-${selectedEndDate?.year.toString().padLeft(2, '0')}";
+  }
+
   bool compareStartEndDate(){
-    //todo: Validate Start Time and End Time
+    if(!selectedEndDate!.isAfter(selectedStartDate!)) {
+      changeSelectedDateTime();
+      return false;
+    }
     return true;
+  }
+
+  bool compareStartEndTime(){
+    if(selectedEndDate == selectedStartDate) {
+        if(selectedEndTime.hour > selectedStartTime.hour) {
+            return true;
+          }
+        else if(selectedEndTime.hour == selectedStartTime.hour) {
+            if(selectedEndTime.minute > selectedStartTime.minute) {
+                return true;
+              }
+            else{
+              changeSelectedDateTime();
+              return false;
+            }
+          }
+        else{
+          changeSelectedDateTime();
+          return false;
+        }
+      }
+    else{
+      return true;
+    }
   }
 
   @override
@@ -179,22 +221,6 @@ class _EventPageState extends State<EventPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Row(
-                        //   children: [
-                        //     const Padding(padding: EdgeInsets.all(16), child: Icon(Icons.access_time, color: Colors.black, size: 30,)),
-                        //     const Text("Day, Date", style: TextStyle(
-                        //       color: Colors.black,
-                        //       fontWeight: FontWeight.bold,
-                        //       fontSize: 16
-                        //     ),),
-                        //     Padding(padding: EdgeInsets.only(right: MediaQuery.of(context).size.width/2.5)),
-                        //    const Text("Time", style: TextStyle(
-                        //         color: Colors.black,
-                        //         fontWeight: FontWeight.bold,
-                        //         fontSize: 16
-                        //     ),)
-                        //   ],
-                        // ),
                         const Padding(padding: EdgeInsets.all(6), child: Icon(Icons.access_time, color: Colors.black, size: 30,)),
                         Row(
                           children: [
@@ -323,10 +349,24 @@ class _EventPageState extends State<EventPage> {
                       const Text("Notify All", style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black,fontSize: 20),)
                     ],
                   ),
+                  Row(
+                    children: [
+                      const Padding(padding: EdgeInsets.only(right: 8)),
+                      Checkbox(value: notifyIndividual, onChanged: (bool? value){
+                        setState(() {
+                          notifyIndividual = value!;
+                        });
+                      }),
+                      const Text("Notify before 5 minutes", style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black,fontSize: 20),)
+                    ],
+
+                  ),
                   Center(
                     child: DlsButton(
                       text: "Save",
-                      onPressed: (){},
+                      onPressed: (){
+                        //todo: Api call to store the event in database
+                      },
                     ),
                   )
                 ],

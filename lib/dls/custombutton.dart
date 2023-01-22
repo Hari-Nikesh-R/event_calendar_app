@@ -15,7 +15,7 @@ class _DlsButtonState extends State<DlsButton> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Padding(padding: const EdgeInsets.all(16), child: SizedBox(
       width: MediaQuery.of(context).size.width/3,
       height: 50,
     child: ElevatedButton(
@@ -31,6 +31,6 @@ class _DlsButtonState extends State<DlsButton> {
           fontSize: 16
         ),
     ),
-    ));
+    )));
   }
 }
