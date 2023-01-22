@@ -1,7 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:calendar_view/calendar_view.dart';
 import 'package:sece_event_calendar/utils/colors.dart';
 import 'package:sece_event_calendar/utils/constants.dart';
+
+import 'event_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -17,17 +21,49 @@ class _HomePageState extends State<HomePage> {
   EventController eventController = EventController();
   bool toggleMenu = false;
 
+  DateTime get _now => DateTime.now();
+
   @override
   void initState() {
     view = 1;
     calendarView = WEEK_VIEW;
     calendarIcon = const Icon(Icons.calendar_view_week);
     toggleMenu = false;
-    final event = CalendarEventData(
-      date: DateTime(2023, 1, 1),
-      event: "Event 1", title: 'Title',
+    final event1 =  CalendarEventData(
+      date: _now,
+      event:  "Joe's Birthday",
+      title: "PO Meeting",
+      description: "Today is project meeting.",
+      startTime: DateTime(_now.year, _now.month, _now.day, 18, 30),
+      endTime: DateTime(_now.year, _now.month, _now.day, 22),
     );
-    eventController.add(event);
+    final event2 =  CalendarEventData(
+      date: _now,
+      event:  "Joe's Birthday",
+      title: "Project meeting",
+      description: "Today is project meeting.",
+      startTime: DateTime(_now.year, _now.month, _now.day, 2, 30),
+      endTime: DateTime(_now.year, _now.month, _now.day, 5),
+    );
+    final event3 =  CalendarEventData(
+      date: _now.subtract(Duration(days: 2)),
+      startTime: DateTime(
+          _now.add(Duration(days: 2)).year,
+          _now.add(Duration(days: 2)).month,
+          _now.add(Duration(days: 2)).day,
+          10),
+      endTime: DateTime(
+          _now.subtract(Duration(days: 2)).year,
+          _now.subtract(Duration(days: 2)).month,
+          _now.subtract(Duration(days: 2)).day,
+          12),
+      event:"Chemistry Viva",
+      title: "Chemistry Viva",
+      description: "Today is Joe's birthday.",
+    );
+    eventController.add(event1);
+    eventController.add(event2);
+    eventController.add(event3);
     super.initState();
   }
 
@@ -58,9 +94,17 @@ class _HomePageState extends State<HomePage> {
      return CalendarControllerProvider(
        controller: eventController,
        child:  MaterialApp(
-         home: Scaffold(
-           floatingActionButton: FloatingActionButton(onPressed: (){
+         scrollBehavior: const ScrollBehavior().copyWith(
+           dragDevices: {
+             PointerDeviceKind.trackpad,
+             PointerDeviceKind.mouse,
+             PointerDeviceKind.touch,
            },
+         ),
+         home: Scaffold(
+           floatingActionButton: FloatingActionButton(heroTag: "create", onPressed: (){
+           Navigator.push(context, MaterialPageRoute(builder: (context) =>const EventPage()));
+             },
              backgroundColor: THEME_COLOR,
                child: const Icon(Icons.add,color: Colors.white)
            ),
@@ -71,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                     Padding(padding: const EdgeInsets.all(16),child:
                         Row(
                           children: [
-                      FloatingActionButton(backgroundColor: THEME_COLOR,onPressed: (){
+                      FloatingActionButton(heroTag: "menu",backgroundColor: THEME_COLOR,onPressed: (){
                         setState(() {
                           toggleMenu = !toggleMenu;
                         });
@@ -80,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                             Visibility(
                                 visible: toggleMenu,
                                 child:
-                            FloatingActionButton(backgroundColor: THEME_COLOR,onPressed: (){
+                            FloatingActionButton(heroTag: "calendar",backgroundColor: THEME_COLOR,onPressed: (){
                                 if(view%3 == 0) {
                                     setState(() {
                                       calendarView = WEEK_VIEW;
@@ -106,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                             const Padding(padding: EdgeInsets.only(right: 12)),
                             Visibility(visible:toggleMenu,
                                 child:
-                            FloatingActionButton(backgroundColor: THEME_COLOR,onPressed: (){
+                            FloatingActionButton(heroTag:"profile",backgroundColor: THEME_COLOR,onPressed: (){
                             },child: const Icon(Icons.person_outline))),
                           ]
                         )),),
