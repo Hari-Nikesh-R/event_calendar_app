@@ -21,6 +21,10 @@ class _EventPageState extends State<EventPage> {
 
   String currentTime = "-";
 
+  saveEvent() async{
+
+  }
+
   Future<void> selectStartTime() async{
     final TimeOfDay? pickedS = await showTimePicker(
         context: context,
@@ -366,6 +370,7 @@ class _EventPageState extends State<EventPage> {
                       text: "Save",
                       onPressed: (){
                         //todo: Api call to store the event in database
+                        saveEvent();
                       },
                     ),
                   )
