@@ -9,44 +9,44 @@ CalendarEvent calendarEventFromJsonWithDecode(Map<String, dynamic> json) => Cale
 
 class CalendarEvent {
   CalendarEvent({
-    required this.eventId,
-    required this.createdBy,
+    this.eventId,
+    this.createdBy,
     this.modifiedBy,
-    required this.status,
-    required this.title,
-    required this.description,
-    required this.startHour,
-    required this.endHour,
-    required this.startMinute,
-    required this.endMinute,
-    required this.eventStartDate,
-    required this.eventEndDate,
+    this.status,
+    this.title,
+     this.description,
+     this.startHour,
+     this.endHour,
+     this.startMinute,
+     this.endMinute,
+     this.eventStartDate,
+     this.eventEndDate,
     this.profile,
-    required this.created,
+     this.created,
     this.updated,
-    required this.location,
-    required this.notifyAll,
-    required this.eventType,
+     this.location,
+     this.notifyAll,
+     this.eventType,
   });
 
-  String eventId;
-  String createdBy;
+  String? eventId;
+  String? createdBy;
   dynamic modifiedBy;
-  String status;
-  String title;
-  String description;
-  int startHour;
-  int endHour;
-  int startMinute;
-  int endMinute;
-  DateTime eventStartDate;
-  DateTime eventEndDate;
+  String? status;
+  String? title;
+  String? description;
+  int? startHour;
+  int? endHour;
+  int? startMinute;
+  int? endMinute;
+  DateTime? eventStartDate;
+  DateTime? eventEndDate;
   dynamic profile;
-  DateTime created;
+  DateTime? created;
   dynamic updated;
-  String location;
-  bool notifyAll;
-  String eventType;
+  String? location;
+  bool? notifyAll;
+  String? eventType;
 
   factory CalendarEvent.fromJson(Map<String, dynamic> json) => CalendarEvent(
     eventId: json["eventId"],
@@ -80,10 +80,10 @@ class CalendarEvent {
     "endHour": endHour,
     "startMinute": startMinute,
     "endMinute": endMinute,
-    "eventStartDate": eventStartDate.toIso8601String(),
-    "eventEndDate": eventEndDate.toIso8601String(),
+    "eventStartDate": eventStartDate?.toIso8601String(),
+    "eventEndDate": eventEndDate?.toIso8601String(),
     "profile": profile,
-    "created": created.toIso8601String(),
+    "created": created?.toIso8601String(),
     "updated": updated,
     "location": location,
     "notifyAll": notifyAll,

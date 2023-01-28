@@ -48,12 +48,12 @@ class _HomePageState extends State<HomePage> {
   setEventInCalendar(List<CalendarEvent>? events){
     events?.forEach((event) {
       var createdEvent = CalendarEventData(
-        date: _now,
+        date: event.eventStartDate!,
         event:  event.eventType,
-        title: event.title,
-        description: event.description,
-        startTime: DateTime(event.eventStartDate.year, event.eventStartDate.month, event.eventStartDate.day, event.startHour, event.startMinute),
-        endTime: DateTime(event.eventEndDate.year, event.eventEndDate.month, event.eventEndDate.day, event.endHour, event.endMinute),
+        title: "${event.title}",
+        description: "${event.description}",
+        startTime: DateTime(event.eventStartDate!.year, event.eventStartDate!.month, event.eventStartDate!.day, event.startHour!, event.startMinute!),
+        endTime: DateTime(event.eventEndDate!.year, event.eventEndDate!.month, event.eventEndDate!.day, event.endHour!, event.endMinute!),
       );
       eventController.add(createdEvent);
     });
@@ -78,7 +78,6 @@ class _HomePageState extends State<HomePage> {
           heightPerMinute: 1.2
       );
     }
-
   }
 
   @override

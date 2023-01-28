@@ -11,6 +11,15 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+
+  TextEditingController firstNameField = TextEditingController();
+  TextEditingController lastNameField = TextEditingController();
+  TextEditingController emailField = TextEditingController();
+  TextEditingController phoneNumberField = TextEditingController();
+  TextEditingController organizationField = TextEditingController();
+  TextEditingController passwordField = TextEditingController();
+
+
   var isObscured = true;
   @override
   void initState() {
@@ -48,16 +57,17 @@ class _SignUpPageState extends State<SignUpPage> {
                 const CustomInfoBar(message: "Only SECE email is Allowed!"),
                 Row(
                   children: [
-                      CustomEditText(hintText: "First Name*",width: MediaQuery.of(context).size.width/2.5),
-                      CustomEditText(hintText: "Last Name*",width: MediaQuery.of(context).size.width/2.5),
+                      CustomEditText(hintText: "First Name*",width: MediaQuery.of(context).size.width/2.5, textField: firstNameField,),
+                      CustomEditText(hintText: "Last Name*",width: MediaQuery.of(context).size.width/2.5,textField: lastNameField,),
                     ]
                 ),
-                const CustomEditText(hintText: "Email*"),
-                const CustomEditText(hintText: "Phone Number*"),
-                const CustomEditText(hintText: "Organization*"),
+                 CustomEditText(hintText: "Email*",textField: emailField,),
+                 CustomEditText(hintText: "Phone Number*",textField: phoneNumberField,),
+                 CustomEditText(hintText: "Organization*", textField: organizationField,),
                 Padding(padding: const EdgeInsets.all(16), child:
                 TextFormField(
                   obscureText: isObscured,
+                  controller: passwordField,
                   decoration: InputDecoration(
                       hintText: "Password*",
                       fillColor: Colors.white,

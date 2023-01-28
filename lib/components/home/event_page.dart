@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sece_event_calendar/components/home/home_page.dart';
 import 'package:sece_event_calendar/dls/custombutton.dart';
 import 'package:sece_event_calendar/dls/customedittext.dart';
+import 'package:sece_event_calendar/service/api_interface.dart';
+
+import '../../model/calendar_event.dart';
 
 class EventPage extends StatefulWidget {
   const EventPage({Key? key}) : super(key: key);
@@ -10,6 +14,10 @@ class EventPage extends StatefulWidget {
 }
 
 class _EventPageState extends State<EventPage> {
+  TextEditingController eventTitle = TextEditingController();
+  TextEditingController eventDescription = TextEditingController();
+  TextEditingController eventAnnouncement = TextEditingController();
+  TextEditingController eventLocation = TextEditingController();
   bool notifyAll = true;
   bool notifyIndividual = true;
   String currentDate = "-";
@@ -18,10 +26,13 @@ class _EventPageState extends State<EventPage> {
   DateTime? selectedEndDate;
   TimeOfDay selectedStartTime = TimeOfDay.now();
   TimeOfDay selectedEndTime = TimeOfDay.now();
+  var homePage;
 
   String currentTime = "-";
+  late Future<CalendarEvent?> addedEvent;
 
-  saveEvent() async{
+  saveEvent(CalendarEvent calendarEvent) async{
+     addedEvent = ApiInterface().addEvent(calendarEvent);
 
   }
 
@@ -37,6 +48,12 @@ class _EventPageState extends State<EventPage> {
     if (pickedS != null && pickedS != selectedStartTime ) {
       setState(() {
         selectedStartTime = pickedS;
+        setState(() {
+          if(selectedStartTime.hour > selectedEndTime.hour) {
+            selectedEndTime = selectedStartTime;
+            changeSelectedDateTime();
+          }
+        });
       });
     }
   }
@@ -75,6 +92,12 @@ class _EventPageState extends State<EventPage> {
           "${selectedStartDate?.day
               .toString()}-${selectedStartDate?.month.toString().padLeft(
               2, '0')}-${selectedStartDate?.year.toString().padLeft(2, '0')}";
+          setState(() {
+            if(selectedStartDate!.isAfter(selectedEndDate!)){ selectedEndDate = selectedStartDate;
+            changeSelectedDateTime();
+            }
+          });
+
         }
         if(currentDate == "null-null-null")
         {
@@ -176,6 +199,8 @@ class _EventPageState extends State<EventPage> {
     super.initState();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -190,11 +215,12 @@ class _EventPageState extends State<EventPage> {
                     onPressed: (){
                         Navigator.pop(context);
                   },)),
-                  const CustomEditText(hintText: "Title*",sufficeIcon: Icon(Icons.title, color: Colors.black,size: 25,)),
+                  CustomEditText(hintText: "Title*",sufficeIcon: const Icon(Icons.title, color: Colors.black,size: 25,), textField: eventTitle),
                   Container(
                     margin: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
                     child:
                   TextField(
+                    controller: eventDescription,
                     maxLines: 6,
                     decoration: InputDecoration(
                       labelText: "Description*",
@@ -208,7 +234,7 @@ class _EventPageState extends State<EventPage> {
                       )
                     )
                   )),
-                  const CustomEditText(hintText: "Announcement",sufficeIcon: Icon(Icons.announcement, color: Colors.black,size: 25,)),
+                   CustomEditText(hintText: "Announcement",sufficeIcon: const Icon(Icons.announcement, color: Colors.black,size: 25,), textField: eventAnnouncement,),
                   Padding(padding: const EdgeInsets.all(16), child:
                       Container(
                           decoration: BoxDecoration(
@@ -341,7 +367,7 @@ class _EventPageState extends State<EventPage> {
                       ],
                     ),
                   )))),
-                  const CustomEditText(hintText: "Add Location", sufficeIcon: Icon(Icons.location_on, color: Colors.black,size: 25,),),
+                  CustomEditText(hintText: "Add Location", sufficeIcon: const Icon(Icons.location_on, color: Colors.black,size: 25,),textField: eventLocation,),
                   Row(
                     children: [
                        const Padding(padding: EdgeInsets.only(right: 8)),
@@ -369,8 +395,15 @@ class _EventPageState extends State<EventPage> {
                     child: DlsButton(
                       text: "Save",
                       onPressed: (){
-                        //todo: Api call to store the event in database
-                        saveEvent();
+                        CalendarEvent calendarEvent = CalendarEvent(title: eventTitle.text, description: eventDescription.text, startHour: selectedStartTime.hour, endHour: selectedEndTime.hour, startMinute: selectedStartTime.minute, endMinute: selectedEndTime.minute, eventStartDate: selectedStartDate, eventEndDate: selectedEndDate, location: eventLocation.text, notifyAll: notifyAll);
+                        saveEvent(calendarEvent);
+                        setState(() {
+                        Navigator.push(
+                        context,
+                         MaterialPageRoute(
+                        builder: (context) =>  const HomePage()),
+                          );
+                        });
                       },
                     ),
                   )
