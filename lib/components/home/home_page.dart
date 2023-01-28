@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:calendar_view/calendar_view.dart';
+import 'package:sece_event_calendar/model/calendar_event.dart';
+import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:sece_event_calendar/utils/colors.dart';
 import 'package:sece_event_calendar/utils/constants.dart';
 
@@ -25,46 +27,36 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    getAllEvent();
     view = 1;
     calendarView = WEEK_VIEW;
     calendarIcon = const Icon(Icons.calendar_view_week);
     toggleMenu = false;
-    final event1 =  CalendarEventData(
-      date: _now,
-      event:  "Joe's Birthday",
-      title: "PO Meeting",
-      description: "Today is project meeting.",
-      startTime: DateTime(_now.year, _now.month, _now.day, 18, 30),
-      endTime: DateTime(_now.year, _now.month, _now.day, 22),
-    );
-    final event2 =  CalendarEventData(
-      date: _now,
-      event:  "Joe's Birthday",
-      title: "Project meeting",
-      description: "Today is project meeting.",
-      startTime: DateTime(_now.year, _now.month, _now.day, 2, 30),
-      endTime: DateTime(_now.year, _now.month, _now.day, 5),
-    );
-    final event3 =  CalendarEventData(
-      date: _now.subtract(Duration(days: 2)),
-      startTime: DateTime(
-          _now.add(Duration(days: 2)).year,
-          _now.add(Duration(days: 2)).month,
-          _now.add(Duration(days: 2)).day,
-          10),
-      endTime: DateTime(
-          _now.subtract(Duration(days: 2)).year,
-          _now.subtract(Duration(days: 2)).month,
-          _now.subtract(Duration(days: 2)).day,
-          12),
-      event:"Chemistry Viva",
-      title: "Chemistry Viva",
-      description: "Today is Joe's birthday.",
-    );
-    eventController.add(event1);
-    eventController.add(event2);
-    eventController.add(event3);
     super.initState();
+  }
+  List<CalendarEvent>? allEvents;
+
+  getAllEvent() async{
+    allEvents = await ApiInterface().getAllEvents();
+    setState(() {
+      debugPrint(allEvents.toString());
+      allEvents = allEvents;
+      setEventInCalendar(allEvents);
+    });
+  }
+
+  setEventInCalendar(List<CalendarEvent>? events){
+    events?.forEach((event) {
+      var createdEvent = CalendarEventData(
+        date: event.eventStartDate!,
+        event:  event.eventType,
+        title: "${event.title}",
+        description: "${event.description}",
+        startTime: DateTime(event.eventStartDate!.year, event.eventStartDate!.month, event.eventStartDate!.day, event.startHour!, event.startMinute!),
+        endTime: DateTime(event.eventEndDate!.year, event.eventEndDate!.month, event.eventEndDate!.day, event.endHour!, event.endMinute!),
+      );
+      eventController.add(createdEvent);
+    });
   }
 
   Widget decideCalendarView()
@@ -86,7 +78,6 @@ class _HomePageState extends State<HomePage> {
           heightPerMinute: 1.2
       );
     }
-
   }
 
   @override
@@ -103,6 +94,7 @@ class _HomePageState extends State<HomePage> {
          ),
          home: Scaffold(
            floatingActionButton: FloatingActionButton(heroTag: "create", onPressed: (){
+
            Navigator.push(context, MaterialPageRoute(builder: (context) =>const EventPage()));
              },
              backgroundColor: THEME_COLOR,
@@ -154,23 +146,6 @@ class _HomePageState extends State<HomePage> {
                             },child: const Icon(Icons.person_outline))),
                           ]
                         )),),
-               // Align(alignment: Alignment.centerRight, child:
-               // Padding(padding: const EdgeInsets.all(16),child:
-               // Column(
-               //   mainAxisAlignment: MainAxisAlignment.end,
-               //     children: [
-               //       FloatingActionButton(backgroundColor: THEME_COLOR,onPressed: (){
-               //       },child: const Icon(Icons.menu)),
-               //       const Padding(padding: EdgeInsets.all(12)),
-               //       FloatingActionButton(backgroundColor: THEME_COLOR,onPressed: (){
-               //       },child: const Icon(Icons.calendar_month)),
-               //       const Padding(padding: EdgeInsets.all(12)),
-               //       FloatingActionButton(backgroundColor: THEME_COLOR,onPressed: (){
-               //       },child: const Icon(Icons.person_outline)),
-               //       Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height/10))
-               //     ]
-               // )),)
-
              ],
            )
          ),

@@ -21,6 +21,10 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
+  TextEditingController emailField = TextEditingController();
+  TextEditingController passwordField = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,9 +62,10 @@ class _LoginPageState extends State<LoginPage> {
                   fontSize: 24,
                   color: Colors.black,
                 ),)),
-               const CustomEditText(hintText: "Email", sufficeIcon: Icon(Icons.email, color: Colors.black,),),
+                CustomEditText(hintText: "Email", sufficeIcon: Icon(Icons.email, color: Colors.black,),textField: emailField,),
                 Padding(padding: const EdgeInsets.all(16), child:
                 TextFormField(
+                  controller: passwordField,
                   obscureText: isObscured,
                   decoration: InputDecoration(
                       hintText: "Password",
