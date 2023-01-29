@@ -1,12 +1,17 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:calendar_view/calendar_view.dart';
 import 'package:sece_event_calendar/model/calendar_event.dart';
 import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:sece_event_calendar/utils/colors.dart';
 import 'package:sece_event_calendar/utils/constants.dart';
 
+import '../../calendar_view/src/calendar_controller_provider.dart';
+import '../../calendar_view/src/calendar_event_data.dart';
+import '../../calendar_view/src/day_view/day_view.dart';
+import '../../calendar_view/src/event_controller.dart';
+import '../../calendar_view/src/month_view/month_view.dart';
+import '../../calendar_view/src/week_view/week_view.dart';
 import 'event_page.dart';
 
 class HomePage extends StatefulWidget {
