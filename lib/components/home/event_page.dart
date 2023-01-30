@@ -389,7 +389,6 @@ class _EventPageState extends State<EventPage> {
                       }),
                       const Text("Notify before 5 minutes", style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black,fontSize: 20),)
                     ],
-
                   ),
                   Center(
                     child: DlsButton(
@@ -398,10 +397,10 @@ class _EventPageState extends State<EventPage> {
                         CalendarEvent calendarEvent = CalendarEvent(title: eventTitle.text, description: eventDescription.text, startHour: selectedStartTime.hour, endHour: selectedEndTime.hour, startMinute: selectedStartTime.minute, endMinute: selectedEndTime.minute, eventStartDate: selectedStartDate, eventEndDate: selectedEndDate, location: eventLocation.text, notifyAll: notifyAll);
                         saveEvent(calendarEvent);
                         setState(() {
-                        Navigator.push(
+                        Navigator.pushAndRemoveUntil<void>(
                         context,
-                         MaterialPageRoute(
-                        builder: (context) =>  const HomePage()),
+                         MaterialPageRoute<void>(builder: (BuildContext context) =>const HomePage()),
+                        ModalRoute.withName("home_page"),
                           );
                         });
                       },
