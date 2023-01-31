@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:sece_event_calendar/dls/custombutton.dart';
+import 'package:sece_event_calendar/model/userdetail.dart';
+import 'package:sece_event_calendar/service/api_interface.dart';
 
 import 'login_page.dart';
 
 
 class VerifyPage extends StatefulWidget {
-  const VerifyPage({Key? key}) : super(key: key);
+  const VerifyPage({super.key, required this.details});
+  final UserDetail details;
 
   @override
   State<VerifyPage> createState() => _VerifyPageState();
@@ -16,6 +19,22 @@ class VerifyPage extends StatefulWidget {
 class _VerifyPageState extends State<VerifyPage> {
   OtpFieldController otpFieldController = OtpFieldController();
   var otpField="";
+  String? verificationMessage ;
+
+  void verifyCode(UserDetail userDetail, String code) async{
+    verificationMessage = await ApiInterface().verifyRegistrationCode(userDetail, code);
+    debugPrint(verificationMessage);
+    if(verificationMessage == "Success")
+    {
+      setState(() {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Account Created"
+            )));
+        Navigator.pushNamedAndRemoveUntil(context, "/login_page", ModalRoute.withName('/'));
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,7 +95,7 @@ class _VerifyPageState extends State<VerifyPage> {
             ),
             Padding(padding:const EdgeInsets.only(top: 52),
               child: DlsButton(text: "VERIFY", onPressed: (){
-                //todo: Api for verifying code
+                verifyCode(widget.details, otpField);
               }),),
             Padding(padding:const EdgeInsets.only(top: 32),
                 child: GestureDetector(

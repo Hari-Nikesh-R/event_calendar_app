@@ -3,6 +3,9 @@ import 'package:sece_event_calendar/components/home/home_page.dart';
 import 'package:sece_event_calendar/components/login/signup_page.dart';
 import 'package:sece_event_calendar/dls/custombutton.dart';
 import 'package:sece_event_calendar/dls/customedittext.dart';
+import 'package:sece_event_calendar/service/api_interface.dart';
+import 'package:sece_event_calendar/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -19,6 +22,38 @@ class _LoginPageState extends State<LoginPage> {
     // TODO: implement initState
     isObscured = true;
     super.initState();
+  }
+
+  void authenticateUserApi() async{
+    String token  = await ApiInterface().authenticate(emailField.text, passwordField.text);
+    try {
+    debugPrint("Token: $token");
+      if (token == "false") {
+        setState(() {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Invalid Username or Password"
+              )));
+        });
+      }
+      else if(token.isNotEmpty){
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setString(TOKEN, token);
+        setState(() {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
+        });
+      }
+      else{
+        setState(() {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Something went wrong"
+              )));
+        });
+      }
+    }
+    catch(e)
+    {
+      debugPrint(e.toString());
+    }
   }
 
   TextEditingController emailField = TextEditingController();
@@ -87,8 +122,8 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 )),
                 Padding(padding: const EdgeInsets.only(top: 12), child: DlsButton(text: "LOG IN", onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
-                })),
+                  authenticateUserApi();
+                    })),
                const Padding(padding: EdgeInsets.only(top: 20)),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

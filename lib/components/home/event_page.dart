@@ -3,6 +3,7 @@ import 'package:sece_event_calendar/components/home/home_page.dart';
 import 'package:sece_event_calendar/dls/custombutton.dart';
 import 'package:sece_event_calendar/dls/customedittext.dart';
 import 'package:sece_event_calendar/service/api_interface.dart';
+import 'package:sece_event_calendar/utils/colors.dart';
 
 import '../../model/calendar_event.dart';
 
@@ -26,14 +27,35 @@ class _EventPageState extends State<EventPage> {
   DateTime? selectedEndDate;
   TimeOfDay selectedStartTime = TimeOfDay.now();
   TimeOfDay selectedEndTime = TimeOfDay.now();
+  String selectedDepartment = "CCE";
+  String selectedVenue = "Respective Department";
+
+
+  List<DropdownMenuItem<String>> dropdownItems = const [
+    DropdownMenuItem(value: "CCE", child: Text("CCE")),
+    DropdownMenuItem(value: "CSE", child: Text("CSE")),
+    DropdownMenuItem(value: "ECE", child: Text("ECE")),
+    DropdownMenuItem(value: "EEE", child: Text("EEE")),
+    DropdownMenuItem(value: "MECH", child: Text("MECH")),
+    DropdownMenuItem(value: "PLACEMENT", child: Text("PLACEMENT")),
+    DropdownMenuItem(value: "ADMIN", child: Text("ADMIN")),
+    DropdownMenuItem(value: "TRAINING", child: Text("TRAINING")),
+  ];
+
+  List<String> venues = ["Placement Lab","Auditorium 1","Auditorium 2","IT center","Placement Cell","Conference Hall","Ignite GroundFloor","Respective Department"];
   var homePage;
 
   String currentTime = "-";
-  late Future<CalendarEvent?> addedEvent;
+  late CalendarEvent? addedEvent;
 
   saveEvent(CalendarEvent calendarEvent) async{
-     addedEvent = ApiInterface().addEvent(calendarEvent);
-
+     addedEvent = await ApiInterface().addEvent(calendarEvent).whenComplete(() =>  setState(() {
+       Navigator.pushAndRemoveUntil<void>(
+         context,
+         MaterialPageRoute<void>(builder: (BuildContext context) => const HomePage()),
+         ModalRoute.withName("home_page"),
+       );
+     }));
   }
 
   Future<void> selectStartTime() async{
@@ -198,8 +220,26 @@ class _EventPageState extends State<EventPage> {
         2, '0')}-${selectedEndDate?.year.toString().padLeft(2, '0')}";
     super.initState();
   }
-
-
+  Widget setupVenueSelected() {
+    return SizedBox(
+      width: 300,
+    height: 250,
+        child:
+     ListView.builder(
+        shrinkWrap: true,
+        itemCount: 5,
+        itemBuilder: (BuildContext context, int index) {
+            return  ListTile(
+            title: Text(venues[index]),
+              onTap: (){
+                selectedVenue = venues[index];
+                eventLocation.text = selectedVenue;
+                Navigator.pop(context);
+              },
+          );
+        },
+      ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -235,6 +275,31 @@ class _EventPageState extends State<EventPage> {
                     )
                   )),
                    CustomEditText(hintText: "Announcement",sufficeIcon: const Icon(Icons.announcement, color: Colors.black,size: 25,), textField: eventAnnouncement,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                     Padding(padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/8),child: const Text("Organizing Department*", style: TextStyle(
+                      fontSize: 16,color: Colors.black,
+                    ),)),
+                      const Padding(padding: EdgeInsets.only(left: 12)),
+                      Center(
+                          child:Card(
+                            elevation: 12,
+                            child: Padding(padding: const EdgeInsets.only(left: 12,right: 12),child: DropdownButton(
+                              value: selectedDepartment,
+                              items: dropdownItems, onChanged: (String? value) {
+                              setState(() {
+                                selectedDepartment = value??"CCE";
+                              });
+                            },
+                            )
+                            ),
+                          ))
+                    ],
+                  )
+
+                    ,
                   Padding(padding: const EdgeInsets.all(16), child:
                       Container(
                           decoration: BoxDecoration(
@@ -292,8 +357,8 @@ class _EventPageState extends State<EventPage> {
                                         children: [
                                           Text(
                                             selectedStartTime.hour.toString().length == 1?
-                                            "0${selectedStartTime.hour}:${selectedStartTime.minute}":
-                                            "${selectedStartTime.hour}:${selectedStartTime.minute}",
+                                            "0${selectedStartTime.hour}:${selectedStartTime.minute.toString().padLeft(2,'0')}":
+                                            "${selectedStartTime.hour}:${selectedStartTime.minute.toString().padLeft(2,'0')}",
                                             maxLines: 1,
                                             style: const TextStyle(
                                                 fontSize: 18
@@ -348,8 +413,8 @@ class _EventPageState extends State<EventPage> {
                                         children: [
                                       Text(
                                         selectedEndTime.hour.toString().length == 1?
-                                        "0${selectedEndTime.hour}:${selectedEndTime.minute}":
-                                        "${selectedEndTime.hour}:${selectedEndTime.minute}",
+                                        "0${selectedEndTime.hour}:${selectedEndTime.minute.toString().padLeft(2,'0')}":
+                                        "${selectedEndTime.hour}:${selectedEndTime.minute.toString().padLeft(2,'0')}",
                                         maxLines: 1,
                                         style: const TextStyle(
                                             fontSize: 18
@@ -367,7 +432,40 @@ class _EventPageState extends State<EventPage> {
                       ],
                     ),
                   )))),
-                  CustomEditText(hintText: "Add Location", sufficeIcon: const Icon(Icons.location_on, color: Colors.black,size: 25,),textField: eventLocation,),
+                  Container(
+                  width: MediaQuery.of(context).size.width,
+                  margin: const EdgeInsets.all(16),
+                  child: TextFormField(
+                  controller: eventLocation,
+                  onTap: (){
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Select Venue', style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontSize: 18
+                            ),),
+                            content: setupVenueSelected(),
+                          );
+                        });
+                  },
+                  readOnly: true,
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                  hintText: "Add Venue",
+                  fillColor: Colors.white,
+                  filled: true,
+                  suffixIcon: const Icon(Icons.arrow_drop_down,size: 25,),
+                  enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide:const BorderSide(
+                  color: Colors.blue
+                  )
+                  )
+                  ),
+                  )),
                   Row(
                     children: [
                        const Padding(padding: EdgeInsets.only(right: 8)),
@@ -379,30 +477,25 @@ class _EventPageState extends State<EventPage> {
                       const Text("Notify All", style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black,fontSize: 20),)
                     ],
                   ),
-                  Row(
-                    children: [
-                      const Padding(padding: EdgeInsets.only(right: 8)),
-                      Checkbox(value: notifyIndividual, onChanged: (bool? value){
-                        setState(() {
-                          notifyIndividual = value!;
-                        });
-                      }),
-                      const Text("Notify before 5 minutes", style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black,fontSize: 20),)
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     const Padding(padding: EdgeInsets.only(right: 8)),
+                  //     Checkbox(value: notifyIndividual, onChanged: (bool? value){
+                  //       setState(() {
+                  //         notifyIndividual = value!;
+                  //       });
+                  //     }),
+                  //     const Text("Notify before 5 minutes", style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black,fontSize: 20),)
+                  //   ],
+                  // ),
                   Center(
                     child: DlsButton(
                       text: "Save",
                       onPressed: (){
                         CalendarEvent calendarEvent = CalendarEvent(title: eventTitle.text, description: eventDescription.text, startHour: selectedStartTime.hour, endHour: selectedEndTime.hour, startMinute: selectedStartTime.minute, endMinute: selectedEndTime.minute, eventStartDate: selectedStartDate, eventEndDate: selectedEndDate, location: eventLocation.text, notifyAll: notifyAll);
                         saveEvent(calendarEvent);
-                        setState(() {
-                        Navigator.pushAndRemoveUntil<void>(
-                        context,
-                         MaterialPageRoute<void>(builder: (BuildContext context) =>const HomePage()),
-                        ModalRoute.withName("home_page"),
-                          );
-                        });
+
+                        debugPrint("API success");
                       },
                     ),
                   )

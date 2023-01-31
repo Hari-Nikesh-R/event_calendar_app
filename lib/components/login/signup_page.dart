@@ -96,16 +96,24 @@ class _SignUpPageState extends State<SignUpPage> {
                 )),
                 Padding(padding: const EdgeInsets.only(top: 12),child:
                 DlsButton(text: "Sign Up", onPressed: (){
-                  UserDetail userDetail = UserDetail(
+                  if(emailField.text.contains("@sece.ac.in")) {
+                    UserDetail userDetail = UserDetail(
                       email: emailField.text,
                       firstName: firstNameField.text,
                       lastName: lastNameField.text,
                       organization: organizationField.text,
                       phoneNumber: phoneNumberField.text,
                       password: passwordField.text,
-                      );
-                  registerUser(userDetail);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const VerifyPage()));
+                    );
+                    registerUser(userDetail);
+                    Navigator.push(context, MaterialPageRoute(builder: (
+                        context) => VerifyPage(details: userDetail)));
+                  }
+                  else{
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Invalid email"
+                        )));
+                  }
                 }))
               ],
             ),
