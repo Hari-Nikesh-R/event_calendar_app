@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sece_event_calendar/components/login/verify_page.dart';
 import 'package:sece_event_calendar/dls/custombutton.dart';
 import 'package:sece_event_calendar/dls/customedittext.dart';
 import 'package:sece_event_calendar/dls/custominfobar.dart';
+import 'package:sece_event_calendar/model/userdetail.dart';
+import 'package:sece_event_calendar/service/api_interface.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -18,9 +21,13 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController phoneNumberField = TextEditingController();
   TextEditingController organizationField = TextEditingController();
   TextEditingController passwordField = TextEditingController();
-
-
   var isObscured = true;
+
+  void registerUser(UserDetail userDetail) async{
+      String? sendMainInfo = await ApiInterface().registerUser(userDetail);
+      debugPrint(sendMainInfo.toString());
+  }
+
   @override
   void initState() {
     isObscured = true;
@@ -89,7 +96,24 @@ class _SignUpPageState extends State<SignUpPage> {
                 )),
                 Padding(padding: const EdgeInsets.only(top: 12),child:
                 DlsButton(text: "Sign Up", onPressed: (){
-                  //todo: Create API
+                  if(emailField.text.contains("@sece.ac.in")) {
+                    UserDetail userDetail = UserDetail(
+                      email: emailField.text,
+                      firstName: firstNameField.text,
+                      lastName: lastNameField.text,
+                      organization: organizationField.text,
+                      phoneNumber: phoneNumberField.text,
+                      password: passwordField.text,
+                    );
+                    registerUser(userDetail);
+                    Navigator.push(context, MaterialPageRoute(builder: (
+                        context) => VerifyPage(details: userDetail)));
+                  }
+                  else{
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Invalid email"
+                        )));
+                  }
                 }))
               ],
             ),

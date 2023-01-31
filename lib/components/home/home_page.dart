@@ -5,6 +5,7 @@ import 'package:sece_event_calendar/model/calendar_event.dart';
 import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:sece_event_calendar/utils/colors.dart';
 import 'package:sece_event_calendar/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../calendar_view/src/calendar_controller_provider.dart';
 import '../../calendar_view/src/calendar_event_data.dart';
@@ -15,7 +16,8 @@ import '../../calendar_view/src/week_view/week_view.dart';
 import 'event_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key, this.event});
+  final CalendarEvent? event;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -29,10 +31,17 @@ class _HomePageState extends State<HomePage> {
   bool toggleMenu = false;
 
   DateTime get _now => DateTime.now();
+  Future<void> successLogin() async{
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(ISLOGIN, true);
+  }
 
   @override
   void initState() {
-    getAllEvent();
+    setState(() {
+      getAllEvent();
+    });
+    successLogin();
     view = 1;
     calendarView = WEEK_VIEW;
     calendarIcon = const Icon(Icons.calendar_view_week);
@@ -46,13 +55,26 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       debugPrint(allEvents.toString());
       allEvents = allEvents;
-      setEventInCalendar(allEvents);
     });
+    setEventInCalendar(allEvents);
   }
 
-  setEventInCalendar(List<CalendarEvent>? events){
+  addEventInCalendar(CalendarEvent event)
+  {
+    var createdEvent = CalendarEventData(
+      date: event.eventStartDate!,
+      event:  event.eventType,
+      title: "${event.title}",
+      description: "${event.description}",
+      startTime: DateTime(event.eventStartDate!.year, event.eventStartDate!.month, event.eventStartDate!.day, event.startHour!, event.startMinute!),
+      endTime: DateTime(event.eventEndDate!.year, event.eventEndDate!.month, event.eventEndDate!.day, event.endHour!, event.endMinute!),
+    );
+    eventController.add(createdEvent);
+  }
+
+  setEventInCalendar(List<CalendarEvent>? events) async{
     events?.forEach((event) {
-      var createdEvent = CalendarEventData(
+      var createdEvent =  CalendarEventData(
         date: event.eventStartDate!,
         event:  event.eventType,
         title: "${event.title}",
