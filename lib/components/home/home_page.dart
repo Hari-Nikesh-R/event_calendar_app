@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:sece_event_calendar/components/home/profile_page.dart';
 import 'package:sece_event_calendar/model/calendar_event.dart';
 import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:sece_event_calendar/utils/colors.dart';
@@ -170,6 +171,7 @@ class _HomePageState extends State<HomePage> {
                             Visibility(visible:toggleMenu,
                                 child:
                             FloatingActionButton(heroTag:"profile",backgroundColor: THEME_COLOR,onPressed: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
                             },child: const Icon(Icons.person_outline))),
                           ]
                         )),),
