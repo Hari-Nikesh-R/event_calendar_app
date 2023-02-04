@@ -53,7 +53,7 @@ class _EventPageState extends State<EventPage> {
        Navigator.pushAndRemoveUntil<void>(
          context,
          MaterialPageRoute<void>(builder: (BuildContext context) => const HomePage()),
-         ModalRoute.withName("home_page"),
+         ModalRoute.withName("/home_page"),
        );
      }));
   }

@@ -100,7 +100,8 @@ class _VerifyPageState extends State<VerifyPage> {
             Padding(padding:const EdgeInsets.only(top: 32),
                 child: GestureDetector(
                     onTap: (){
-                      Navigator.pushAndRemoveUntil<void>(
+                      Navigator.
+                      pushAndRemoveUntil<void>(
                         context,
                         MaterialPageRoute<void>(builder: (BuildContext context) => const LoginPage()),
                         ModalRoute.withName("/"),

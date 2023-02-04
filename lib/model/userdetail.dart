@@ -2,6 +2,8 @@ import 'dart:convert';
 
 UserDetail userDetailFromJson(String str) => UserDetail.fromJson(json.decode(str));
 
+UserDetail userDetailFromJsonDecode(Map<String, dynamic> json) => UserDetail.fromJson(json);
+
 String userDetailToJson(UserDetail data) => json.encode(data.toJson());
 
 class UserDetail {

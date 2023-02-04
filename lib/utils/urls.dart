@@ -1,3 +1,3 @@
-const String EVENT_BACKEND_URL = "http://192.168.0.192:8083";
-const String AUTHENTICATION_URL = "http://192.168.0.192:8089";
+const String EVENT_BACKEND_URL = "http://192.168.155.122:8083";
+const String AUTHENTICATION_URL = "http://192.168.155.122:8089";
 

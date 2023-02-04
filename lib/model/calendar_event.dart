@@ -8,6 +8,8 @@ String calendarEventToJson(CalendarEvent data) => json.encode(data.toJson());
 CalendarEvent calendarEventFromJsonWithDecode(Map<String, dynamic> json) => CalendarEvent.fromJson(json);
 
 class CalendarEvent {
+
+
   CalendarEvent({
     this.eventId,
     this.createdBy,
@@ -27,12 +29,14 @@ class CalendarEvent {
      this.location,
      this.notifyAll,
      this.eventType,
+    this.department
   });
 
   String? eventId;
   String? createdBy;
   dynamic modifiedBy;
   String? status;
+  String? department;
   String? title;
   String? description;
   int? startHour;
@@ -52,6 +56,7 @@ class CalendarEvent {
     eventId: json["eventId"],
     createdBy: json["createdBy"],
     modifiedBy: json["modifiedBy"],
+    department: json["department"],
     status: json["status"],
     title: json["title"],
     description: json["description"],
@@ -74,6 +79,7 @@ class CalendarEvent {
     "createdBy": createdBy,
     "modifiedBy": modifiedBy,
     "status": status,
+    "department": department,
     "title": title,
     "description": description,
     "startHour": startHour,
