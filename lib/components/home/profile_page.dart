@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sece_event_calendar/components/login/login_page.dart';
 import 'package:sece_event_calendar/dls/custombutton.dart';
 import 'package:sece_event_calendar/dls/customcartview.dart';
+import 'package:sece_event_calendar/dls/customedittext.dart';
 import 'package:sece_event_calendar/model/userdetail.dart';
 import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +19,12 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   TextEditingController userNameField = TextEditingController();
 
+  TextEditingController firstNameField = TextEditingController();
+  TextEditingController lastNameField = TextEditingController();
+  TextEditingController emailField = TextEditingController();
+  TextEditingController phoneNumberField = TextEditingController();
+  TextEditingController organizationField = TextEditingController();
+
   UserDetail? userDetail;
   getUserDetails() async{
     userDetail = await ApiInterface().getUserDetails();
@@ -31,6 +38,14 @@ class _ProfilePageState extends State<ProfilePage> {
       getUserDetails();
     });
     super.initState();
+  }
+
+  setUserDetails(){
+    firstNameField.text = userDetail?.firstName??"";
+    lastNameField.text = userDetail?.lastName??"";
+    emailField.text = userDetail?.email??"";
+    phoneNumberField.text = userDetail?.phoneNumber??"";
+    organizationField.text = userDetail?.organization??"";
   }
 
   Future<void> logout() async{
@@ -130,11 +145,41 @@ class _ProfilePageState extends State<ProfilePage> {
                                         color: Colors.black,
                                       ))),
                             )),
-                        const Padding(
+                         GestureDetector(
+                          onTap: (){
+                            setUserDetails();
+                            showModalBottomSheet(shape: const RoundedRectangleBorder(
+                              borderRadius:BorderRadius.only(
+                                topRight: Radius.circular(40),
+                              ),
+                            ), backgroundColor: Colors.white,
+                            context: context, builder: (context){
+                              return  Padding(padding: const EdgeInsets.only(top: 20),
+                              child: SingleChildScrollView(
+                                physics:const BouncingScrollPhysics(),
+                                child: Column(
+                                children: <Widget>[
+                                  const Padding(padding: EdgeInsets.only(top: 24)),
+                                  const Text("Edit Profile", style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                                  CustomEditText(textField: firstNameField, hintText: "First Name"),
+                                  CustomEditText(textField: lastNameField, hintText: "Last Name"),
+                                  CustomEditText(textField: emailField, hintText:"Email"),
+                                  CustomEditText(textField: phoneNumberField, hintText:"Phone number"),
+                                  CustomEditText(textField: organizationField, hintText: "Organization"),
+                                  Center(child: DlsButton(text: "Save", onPressed: (){},),)
+                                ],
+                              )));
+                            });
+                          },
+                          child: const Padding(
                             padding: EdgeInsets.all(16),
                             child: Align(
                                 alignment: Alignment.topRight,
-                                child: Icon(Icons.edit)))
+                                child: Icon(Icons.edit))))
                       ],
                     )))),
         Align(
