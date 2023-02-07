@@ -155,7 +155,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ), backgroundColor: Colors.white,
                             context: context, builder: (context){
                               return  Padding(padding: const EdgeInsets.only(top: 20),
-                              child: SingleChildScrollView(
+                              child:Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom+10),child: SingleChildScrollView(
                                 physics:const BouncingScrollPhysics(),
                                 child: Column(
                                 children: <Widget>[
@@ -172,7 +172,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   CustomEditText(textField: organizationField, hintText: "Organization"),
                                   Center(child: DlsButton(text: "Save", onPressed: (){},),)
                                 ],
-                              )));
+                              ))));
                             });
                           },
                           child: const Padding(
