@@ -42,7 +42,7 @@ class CalendarEventData<T extends Object?> {
     required this.title,
     this.description = "",
     this.event,
-    this.color = const Color(0xFF7F00FF),
+    required this.color,
     this.startTime,
     this.endTime,
     DateTime? endDate,

@@ -6,6 +6,7 @@ import 'package:sece_event_calendar/model/calendar_event.dart';
 import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:sece_event_calendar/utils/colors.dart';
 import 'package:sece_event_calendar/utils/constants.dart';
+import 'package:sece_event_calendar/utils/utility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../calendar_view/src/calendar_controller_provider.dart';
@@ -66,6 +67,7 @@ class _HomePageState extends State<HomePage> {
       date: event.eventStartDate!,
       event:  event.eventType,
       title: "${event.title}",
+      color: Utility().setDepartmentColor(event.department??""),
       description: "${event.description}",
       startTime: DateTime(event.eventStartDate!.year, event.eventStartDate!.month, event.eventStartDate!.day, event.startHour!, event.startMinute!),
       endTime: DateTime(event.eventEndDate!.year, event.eventEndDate!.month, event.eventEndDate!.day, event.endHour!, event.endMinute!),
@@ -78,6 +80,7 @@ class _HomePageState extends State<HomePage> {
       var createdEvent =  CalendarEventData(
         date: event.eventStartDate!,
         event:  event.eventType,
+        color: Utility().setDepartmentColor(event.department??""),
         title: "${event.title}",
         description: "${event.description}",
         startTime: DateTime(event.eventStartDate!.year, event.eventStartDate!.month, event.eventStartDate!.day, event.startHour!, event.startMinute!),

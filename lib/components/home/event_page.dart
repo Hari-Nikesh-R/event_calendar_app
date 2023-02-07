@@ -7,6 +7,7 @@ import 'package:sece_event_calendar/utils/colors.dart';
 import 'package:sece_event_calendar/utils/constants.dart';
 
 import '../../model/calendar_event.dart';
+import '../../utils/utility.dart';
 
 class EventPage extends StatefulWidget {
   const EventPage({Key? key}) : super(key: key);
@@ -30,40 +31,6 @@ class _EventPageState extends State<EventPage> {
   TimeOfDay selectedEndTime = TimeOfDay.now();
   String selectedDepartment = "CCE";
   String selectedVenue = "Respective Department";
-  Color selectedColor = Colors.white;
-
-   Color setDepartmentColor(){
-    switch(selectedDepartment){
-      case CCE:
-        selectedColor = Colors.purple;
-        break;
-      case CSE:
-        selectedColor = Colors.blue;
-        break;
-      case MECH:
-        selectedColor = Colors.orange;
-        break;
-      case PLACEMENT:
-        selectedColor = Colors.yellow;
-        break;
-      case ECE:
-        selectedColor = Colors.purpleAccent;
-        break;
-      case EEE:
-        selectedColor = Colors.greenAccent;
-        break;
-      case ADMIN:
-        selectedColor = Colors.cyanAccent;
-        break;
-      case TRAINING:
-        selectedColor = Colors.redAccent;
-        break;
-      default:
-        selectedColor = Colors.white;
-        break;
-    }
-    return selectedColor;
-  }
 
   List<DropdownMenuItem<String>> dropdownItems = const [
     DropdownMenuItem(value: "CCE", child: Text(CCE)),
@@ -335,13 +302,12 @@ class _EventPageState extends State<EventPage> {
                             ),
                           )),
                          Padding(padding: const EdgeInsets.symmetric(horizontal: 12),child: CircleAvatar(
-                          backgroundColor: setDepartmentColor(),
+                          backgroundColor: Utility().setDepartmentColor(selectedDepartment),
                           maxRadius: 15,
                         ))
                       ])
                     ],
                   )
-
                     ,
                   Padding(padding: const EdgeInsets.all(16), child:
                       Container(
