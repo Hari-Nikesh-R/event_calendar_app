@@ -4,8 +4,10 @@ import 'package:sece_event_calendar/dls/custombutton.dart';
 import 'package:sece_event_calendar/dls/customedittext.dart';
 import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:sece_event_calendar/utils/colors.dart';
+import 'package:sece_event_calendar/utils/constants.dart';
 
 import '../../model/calendar_event.dart';
+import '../../utils/utility.dart';
 
 class EventPage extends StatefulWidget {
   const EventPage({Key? key}) : super(key: key);
@@ -30,16 +32,15 @@ class _EventPageState extends State<EventPage> {
   String selectedDepartment = "CCE";
   String selectedVenue = "Respective Department";
 
-
   List<DropdownMenuItem<String>> dropdownItems = const [
-    DropdownMenuItem(value: "CCE", child: Text("CCE")),
-    DropdownMenuItem(value: "CSE", child: Text("CSE")),
-    DropdownMenuItem(value: "ECE", child: Text("ECE")),
-    DropdownMenuItem(value: "EEE", child: Text("EEE")),
-    DropdownMenuItem(value: "MECH", child: Text("MECH")),
-    DropdownMenuItem(value: "PLACEMENT", child: Text("PLACEMENT")),
-    DropdownMenuItem(value: "ADMIN", child: Text("ADMIN")),
-    DropdownMenuItem(value: "TRAINING", child: Text("TRAINING")),
+    DropdownMenuItem(value: "CCE", child: Text(CCE)),
+    DropdownMenuItem(value: "CSE", child: Text(CSE)),
+    DropdownMenuItem(value: "ECE", child: Text(ECE)),
+    DropdownMenuItem(value: "EEE", child: Text(EEE)),
+    DropdownMenuItem(value: "MECH", child: Text(MECH)),
+    DropdownMenuItem(value: "PLACEMENT", child: Text(PLACEMENT)),
+    DropdownMenuItem(value: "ADMIN", child: Text(ADMIN)),
+    DropdownMenuItem(value: "TRAINING", child: Text(TRAINING)),
   ];
 
   List<String> venues = ["Placement Lab","Auditorium 1","Auditorium 2","IT center","Placement Cell","Conference Hall","Ignite GroundFloor","Respective Department"];
@@ -286,18 +287,22 @@ class _EventPageState extends State<EventPage> {
                     )
                   )),
                    CustomEditText(hintText: "Announcement",sufficeIcon: const Icon(Icons.announcement, color: Colors.black,size: 25,), textField: eventAnnouncement,),
-                  Row(
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                      Padding(padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/8),child: const Text("Organizing Department*", style: TextStyle(
                       fontSize: 16,color: Colors.black,
+                       fontWeight: FontWeight.bold
                     ),)),
-                      const Padding(padding: EdgeInsets.only(left: 12)),
-                      Center(
+                      const Padding(padding: EdgeInsets.only(left: 12,bottom: 12)),
+                      Row(
+                      children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/7.5),
                           child:Card(
                             elevation: 12,
-                            child: Padding(padding: const EdgeInsets.only(left: 12,right: 12),child: DropdownButton(
+                            child: Padding(padding: const EdgeInsets.only(left: 8,right: 8),child: DropdownButton(
                               value: selectedDepartment,
                               items: dropdownItems, onChanged: (String? value) {
                               setState(() {
@@ -306,10 +311,14 @@ class _EventPageState extends State<EventPage> {
                             },
                             )
                             ),
-                          ))
+                          )),
+                         Padding(padding: const EdgeInsets.symmetric(horizontal: 12),child: CircleAvatar(
+                          backgroundColor: Utility().setDepartmentColor(selectedDepartment),
+                          maxRadius: 15,
+                        ))
+                      ])
                     ],
                   )
-
                     ,
                   Padding(padding: const EdgeInsets.all(16), child:
                       Container(

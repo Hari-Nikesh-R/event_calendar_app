@@ -187,7 +187,7 @@ class ApiInterface{
         Map<String, dynamic>? map = json.decode(response.body);
         bool success = map?["success"];
         if(success) {
-          CalendarEvent res = map?["value"];
+          CalendarEvent res = calendarEventFromJsonWithDecode(map?["value"]);
           debugPrint(res.toJson().toString());
           return res;
         }
