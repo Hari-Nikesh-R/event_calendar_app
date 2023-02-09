@@ -5,6 +5,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:sece_event_calendar/components/home/eventdetail_page.dart';
+import 'package:sece_event_calendar/utils/utility.dart';
 
 import '../calendar_constants.dart';
 import '../calendar_controller_provider.dart';
@@ -506,6 +508,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     if (events.isNotEmpty) {
       return GestureDetector(onTap: (){
         debugPrint("Clicked on event");
+        String department = Utility().getDepartmentColor(events[0].color);
+        Navigator.push(context, MaterialPageRoute(builder: (context) =>  EventDetailPage(department: department)));
       },child: RoundedEventTile(
         borderRadius: BorderRadius.circular(10.0),
         title: events[0].title,
