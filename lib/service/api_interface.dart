@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:sece_event_calendar/components/home/home_page.dart';
 import 'package:sece_event_calendar/utils/urls.dart';
+import 'package:sece_event_calendar/utils/utility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/calendar_event.dart';
@@ -179,6 +180,7 @@ class ApiInterface{
              "eventStartDate":calendarEvent.eventStartDate?.toIso8601String(),
              "eventEndDate":calendarEvent.eventEndDate?.toIso8601String(),
              "location":calendarEvent.location.toString(),
+             "department":calendarEvent.department.toString(),
              "eventType":""
            }));
       if(response.statusCode == 200) {
@@ -191,6 +193,11 @@ class ApiInterface{
         }
         else{
           //todo: Log and Handle errors.
+          String error = map?["error"];
+          if(error.isNotEmpty) {
+            calendarEvent.error = error;
+          }
+          return calendarEvent;
         }
         }
       else if(response.statusCode == 401)

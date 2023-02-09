@@ -50,11 +50,22 @@ class _EventPageState extends State<EventPage> {
 
   saveEvent(CalendarEvent calendarEvent) async{
      addedEvent = await ApiInterface().addEvent(calendarEvent).whenComplete(() =>  setState(() {
-       Navigator.pushAndRemoveUntil<void>(
-         context,
-         MaterialPageRoute<void>(builder: (BuildContext context) => const HomePage()),
-         ModalRoute.withName("/home_page"),
-       );
+       if(calendarEvent.error?.isEmpty??true) {
+         Navigator.pushAndRemoveUntil<void>(
+           context,
+           MaterialPageRoute<void>(
+               builder: (BuildContext context) => const HomePage()),
+           ModalRoute.withName("/home_page"),
+         );
+       }
+       else {
+        debugPrint(calendarEvent.error.toString());
+         if (calendarEvent.error?.contains("duplicate event") ?? false) {
+           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+               content: Text("Already event created in that Venue"
+               )));
+         }
+       }
      }));
   }
 
@@ -492,9 +503,8 @@ class _EventPageState extends State<EventPage> {
                     child: DlsButton(
                       text: "Save",
                       onPressed: (){
-                        CalendarEvent calendarEvent = CalendarEvent(title: eventTitle.text, description: eventDescription.text, startHour: selectedStartTime.hour, endHour: selectedEndTime.hour, startMinute: selectedStartTime.minute, endMinute: selectedEndTime.minute, eventStartDate: selectedStartDate, eventEndDate: selectedEndDate, location: eventLocation.text, notifyAll: notifyAll);
+                        CalendarEvent calendarEvent = CalendarEvent(title: eventTitle.text, description: eventDescription.text, startHour: selectedStartTime.hour, endHour: selectedEndTime.hour, startMinute: selectedStartTime.minute, endMinute: selectedEndTime.minute, eventStartDate: selectedStartDate, eventEndDate: selectedEndDate, location: eventLocation.text, notifyAll: notifyAll, department: selectedDepartment);
                         saveEvent(calendarEvent);
-
                         debugPrint("API success");
                       },
                     ),

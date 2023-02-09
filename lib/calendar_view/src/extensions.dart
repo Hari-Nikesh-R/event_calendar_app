@@ -131,7 +131,7 @@ extension DateTimeExtensions on DateTime {
 }
 
 extension ColorExtension on Color {
-  Color get accent => Colors.white;
+  Color get accent => Colors.black;
 }
 
 extension MaterialColorExtension on MaterialColor {
