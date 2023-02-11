@@ -125,7 +125,6 @@ class _HomePageState extends State<HomePage> {
          ),
          home: Scaffold(
            floatingActionButton: FloatingActionButton(heroTag: "create", onPressed: (){
-
            Navigator.push(context, MaterialPageRoute(builder: (context) =>const EventPage()));
              },
              backgroundColor: THEME_COLOR,

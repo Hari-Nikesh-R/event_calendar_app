@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:sece_event_calendar/components/home/home_page.dart';
 import 'package:sece_event_calendar/utils/urls.dart';
+import 'package:sece_event_calendar/utils/utility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/calendar_event.dart';
@@ -45,7 +46,7 @@ class ApiInterface{
     String token = "";
     var client = Client();
     try{
-      var response =await client.post(Uri.parse("$AUTHENTICATION_URL/authenticate"),headers: {
+      var response =await client.post(Uri.parse("$AUTHENTICATION_URL/authenticate"  ),headers: {
         "Accept": "application/json",
         "content-type": "application/json",
       },body: json.encode({
@@ -158,6 +159,33 @@ class ApiInterface{
     }
     return null;
   }
+  Future<CalendarEvent?> getCalendarDetail(String title, String description) async{
+    var client = Client();
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      var token = "Bearer ${prefs.getString(TOKEN)}";
+      var response = await client.get(Uri.parse("$EVENT_BACKEND_URL/events/get?title=$title&description=$description"),headers: {
+      "Accept": "application/json",
+      "content-type": "application/json",
+      "Authorization": token
+      });
+      if(response.statusCode == 200) {
+        Map<String, dynamic>? map = json.decode(response.body);
+        bool success = map?["success"];
+        if(success) {
+          CalendarEvent res = calendarEventFromJsonWithDecode(map?["value"]);
+          debugPrint(res.toJson().toString());
+          return res;
+        }
+        }
+      else if(response.statusCode == 401){
+        //todo: Handle refresh token
+      }
+    }
+    catch(e){
+      debugPrint(e.toString());
+    }
+  }
 
   Future<CalendarEvent?> addEvent(CalendarEvent calendarEvent) async{
     var client = Client();
@@ -179,6 +207,7 @@ class ApiInterface{
              "eventStartDate":calendarEvent.eventStartDate?.toIso8601String(),
              "eventEndDate":calendarEvent.eventEndDate?.toIso8601String(),
              "location":calendarEvent.location.toString(),
+             "department":calendarEvent.department.toString(),
              "eventType":""
            }));
       if(response.statusCode == 200) {
@@ -191,6 +220,11 @@ class ApiInterface{
         }
         else{
           //todo: Log and Handle errors.
+          String error = map?["error"];
+          if(error.isNotEmpty) {
+            calendarEvent.error = error;
+          }
+          return calendarEvent;
         }
         }
       else if(response.statusCode == 401)

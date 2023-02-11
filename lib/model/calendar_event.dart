@@ -29,9 +29,11 @@ class CalendarEvent {
      this.location,
      this.notifyAll,
      this.eventType,
-    this.department
+    this.department,
+     this.error
   });
 
+  String? error = "";
   String? eventId;
   String? createdBy;
   dynamic modifiedBy;
@@ -72,6 +74,7 @@ class CalendarEvent {
     location: json["location"],
     notifyAll: json["notifyAll"],
     eventType: json["eventType"],
+    error: json["error"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -94,5 +97,6 @@ class CalendarEvent {
     "location": location,
     "notifyAll": notifyAll,
     "eventType": eventType,
+    "error": error
   };
 }
