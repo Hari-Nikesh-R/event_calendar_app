@@ -6,6 +6,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:sece_event_calendar/components/home/eventdetail_page.dart';
+import 'package:sece_event_calendar/model/calendar_event.dart';
+import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:sece_event_calendar/utils/utility.dart';
 
 import '../calendar_constants.dart';
@@ -495,6 +497,13 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   Widget _defaultTimeLineBuilder(date) => DefaultTimeLineMark(
       date: date, timeStringBuilder: widget.timeStringBuilder);
 
+  CalendarEvent? calendarEvent;
+  getCalendarDetail(String title, String description) async{
+    calendarEvent = await ApiInterface().getCalendarDetail(title,description);
+    setState(() {
+      calendarEvent = calendarEvent;
+    });
+  }
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
   ///
@@ -507,9 +516,10 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   ) {
     if (events.isNotEmpty) {
       return GestureDetector(onTap: (){
-        debugPrint("Clicked on event");
+        debugPrint("Clicked day event");
         String department = Utility().getDepartmentColor(events[0].color);
-        Navigator.push(context, MaterialPageRoute(builder: (context) =>  EventDetailPage(department: department)));
+         getCalendarDetail(events[0].title,events[0].description);
+        Navigator.push(context, MaterialPageRoute(builder: (context) =>  EventDetailPage(event: calendarEvent,department: department)));
       },child: RoundedEventTile(
         borderRadius: BorderRadius.circular(10.0),
         title: events[0].title,

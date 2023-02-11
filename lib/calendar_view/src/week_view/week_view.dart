@@ -4,6 +4,10 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../components/home/eventdetail_page.dart';
+import '../../../model/calendar_event.dart';
+import '../../../service/api_interface.dart';
+import '../../../utils/utility.dart';
 import '../calendar_constants.dart';
 import '../calendar_controller_provider.dart';
 import '../calendar_event_data.dart';
@@ -613,6 +617,13 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       ),
     );
   }
+  CalendarEvent? calendarEvent;
+  getCalendarDetail(String title, String description) async{
+    calendarEvent = await ApiInterface().getCalendarDetail(title,description);
+    setState(() {
+      calendarEvent = calendarEvent;
+    });
+  }
 
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
@@ -625,9 +636,10 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     if (events.isNotEmpty) {
       return GestureDetector(
         onTap: (){
-          setState(() {
-            debugPrint("Clicked the event");
-          });
+          debugPrint("Clicked week event");
+          String department = Utility().getDepartmentColor(events[0].color);
+          getCalendarDetail(events[0].title,events[0].description);
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>  EventDetailPage(event: calendarEvent,department: department)));
         },
         child: RoundedEventTile(
         borderRadius: BorderRadius.circular(6.0),
