@@ -27,7 +27,7 @@ class Utility{
       case EEE:
         return "assets/eventbg/eeebg.png";
       case ADMIN:
-        return "assets/eventbg/bg.png";
+        return "assets/eventbg/placementbg.png";
       case TRAINING:
         return "assets/eventbg/trainingbg.png";
       default:
@@ -56,8 +56,8 @@ class Utility{
       default:
         return THEME_COLOR;
     }
-
   }
+
 
   String getDepartmentColor(Color color)
   {

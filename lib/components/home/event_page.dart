@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sece_event_calendar/components/home/eventdetail_page.dart';
 import 'package:sece_event_calendar/components/home/home_page.dart';
 import 'package:sece_event_calendar/dls/custombutton.dart';
 import 'package:sece_event_calendar/dls/customedittext.dart';
@@ -10,7 +11,8 @@ import '../../model/calendar_event.dart';
 import '../../utils/utility.dart';
 
 class EventPage extends StatefulWidget {
-  const EventPage({Key? key}) : super(key: key);
+  const EventPage({super.key,this.event});
+  final CalendarEvent? event;
 
   @override
   State<EventPage> createState() => _EventPageState();
@@ -29,8 +31,9 @@ class _EventPageState extends State<EventPage> {
   DateTime? selectedEndDate;
   TimeOfDay selectedStartTime = TimeOfDay.now();
   TimeOfDay selectedEndTime = TimeOfDay.now();
-  String selectedDepartment = "CCE";
+  late String selectedDepartment;
   String selectedVenue = "Respective Department";
+  bool editEventFlag = false;
 
   List<DropdownMenuItem<String>> dropdownItems = const [
     DropdownMenuItem(value: "CCE", child: Text(CCE)),
@@ -47,7 +50,9 @@ class _EventPageState extends State<EventPage> {
   var homePage;
 
   String currentTime = "-";
+  String endTime = "-";
   late CalendarEvent? addedEvent;
+  String? editedEventMessage ="";
 
   saveEvent(CalendarEvent calendarEvent) async{
      addedEvent = await ApiInterface().addEvent(calendarEvent).whenComplete(() =>  setState(() {
@@ -70,6 +75,27 @@ class _EventPageState extends State<EventPage> {
      }));
   }
 
+  editEvent(CalendarEvent? calendarEvent) async{
+    editedEventMessage = await ApiInterface().editEvent(calendarEvent).whenComplete(() =>  setState(() {
+      if(calendarEvent?.error?.isEmpty??true) {
+        Navigator.pushAndRemoveUntil<void>(
+          context,
+          MaterialPageRoute<void>(
+              builder: (BuildContext context) => EventDetailPage(title: calendarEvent?.title, description: calendarEvent?.description, department: calendarEvent?.department??"")),
+          ModalRoute.withName("/home_page"),
+        );
+      }
+      else {
+        debugPrint(calendarEvent?.error.toString());
+        if (calendarEvent?.error?.contains("duplicate event") ?? false) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Already event created in that Venue"
+              )));
+        }
+      }
+    }));
+  }
+
   Future<void> selectStartTime() async{
     final TimeOfDay? pickedS = await showTimePicker(
         context: context,
@@ -82,9 +108,23 @@ class _EventPageState extends State<EventPage> {
     if (pickedS != null && pickedS != selectedStartTime ) {
       setState(() {
         selectedStartTime = pickedS;
+        if(widget.event!=null){
+          widget.event?.startHour = pickedS.hour;
+          widget.event?.startMinute = pickedS.minute;
+        }
+        currentTime = selectedStartTime.hour.toString().length == 1?
+        "0${selectedStartTime.hour}:${selectedStartTime.minute.toString().padLeft(2,'0')}":
+        "${selectedStartTime.hour}:${selectedStartTime.minute.toString().padLeft(2,'0')}";
         setState(() {
           if(selectedStartTime.hour > selectedEndTime.hour) {
             selectedEndTime = selectedStartTime;
+            if(widget.event!=null){
+              widget.event?.endHour = selectedEndTime.hour;
+              widget.event?.endMinute = selectedEndTime.minute;
+            }
+            endTime = selectedEndTime.hour.toString().length == 1?
+            "0${selectedEndTime.hour}:${selectedEndTime.minute.toString().padLeft(2,'0')}":
+            "${selectedEndTime.hour}:${selectedEndTime.minute.toString().padLeft(2,'0')}";
             changeSelectedDateTime();
           }
         });
@@ -104,6 +144,13 @@ class _EventPageState extends State<EventPage> {
     if (pickedS != null && pickedS != selectedEndTime ) {
       setState(() {
         selectedEndTime = pickedS;
+        if(widget.event!=null) {
+            widget.event?.endHour = pickedS.hour;
+            widget.event?.endMinute = pickedS.minute;
+          }
+        endTime = selectedEndTime.hour.toString().length == 1?
+        "0${selectedEndTime.hour}:${selectedEndTime.minute.toString().padLeft(2,'0')}":
+        "${selectedEndTime.hour}:${selectedEndTime.minute.toString().padLeft(2,'0')}";
       });
     }
     compareStartEndTime();
@@ -119,6 +166,9 @@ class _EventPageState extends State<EventPage> {
       setState(() {
         if(value!=null) {
           selectedStartDate = value;
+          if(widget.event!=null) {
+              widget.event?.eventStartDate = value;
+            }
           currentDate = selectedStartDate?.day.toString().length == 1?
           "0${selectedStartDate?.day
               .toString()}-${selectedStartDate?.month.toString().padLeft(
@@ -128,6 +178,9 @@ class _EventPageState extends State<EventPage> {
               2, '0')}-${selectedStartDate?.year.toString().padLeft(2, '0')}";
           setState(() {
             if(selectedStartDate!.isAfter(selectedEndDate!)){ selectedEndDate = selectedStartDate;
+              if(widget.event!=null) {
+                  widget.event?.eventEndDate = selectedEndDate;
+                }
             changeSelectedDateTime();
             }
           });
@@ -151,6 +204,9 @@ class _EventPageState extends State<EventPage> {
       setState(() {
         if(value!=null) {
           selectedEndDate = value;
+          if(widget.event!=null){
+            widget.event?.eventEndDate = value;
+          }
           endDate = selectedEndDate?.day.toString().length == 1? "0${selectedEndDate?.day
               .toString()}-${selectedEndDate?.month.toString().padLeft(
               2, '0')}-${selectedEndDate?.year.toString().padLeft(2, '0')}":
@@ -167,10 +223,17 @@ class _EventPageState extends State<EventPage> {
     });
   }
 
-
   void changeSelectedDateTime(){
     selectedEndDate = selectedStartDate;
     selectedEndTime = selectedStartTime;
+    if(widget.event!=null){
+      widget.event?.eventEndDate = selectedEndDate;
+      widget.event?.endHour = selectedEndTime.hour;
+      widget.event?.endMinute = selectedEndTime.minute;
+    }
+    endTime = selectedEndTime.hour.toString().length == 1?
+    "0${selectedEndTime.hour}:${selectedEndTime.minute.toString().padLeft(2,'0')}":
+    "${selectedEndTime.hour}:${selectedEndTime.minute.toString().padLeft(2,'0')}";
     endDate = selectedEndDate?.day.toString().length == 1? "0${selectedEndDate?.day
         .toString()}-${selectedEndDate?.month.toString().padLeft(
         2, '0')}-${selectedEndDate?.year.toString().padLeft(2, '0')}":
@@ -211,12 +274,51 @@ class _EventPageState extends State<EventPage> {
     }
   }
 
+  void initializeTextController(CalendarEvent? calendar){
+    eventTitle.text = calendar?.title??"";
+    widget.event?.title = calendar?.title??"";
+     eventDescription.text = calendar?.description??"";
+     widget.event?.description = calendar?.description??"";
+     eventAnnouncement.text = calendar?.eventType??"";
+     widget.event?.eventType = calendar?.eventType??"";
+     endDate = calendar?.eventEndDate?.day.toString().length == 1? "0${calendar?.eventEndDate?.day
+         .toString()}-${calendar?.eventEndDate?.month.toString().padLeft(
+         2, '0')}-${calendar?.eventEndDate?.year.toString().padLeft(2, '0')}":
+     "${calendar?.eventEndDate?.day
+         .toString()}-${calendar?.eventEndDate?.month.toString().padLeft(
+         2, '0')}-${calendar?.eventEndDate?.year.toString().padLeft(2, '0')}";
+    currentDate = calendar?.eventStartDate?.day.toString().length == 1?
+    "0${calendar?.eventStartDate?.day
+        .toString()}-${calendar?.eventStartDate?.month.toString().padLeft(
+        2, '0')}-${calendar?.eventStartDate?.year.toString().padLeft(2, '0')}":
+    "${calendar?.eventStartDate?.day
+        .toString()}-${calendar?.eventStartDate?.month.toString().padLeft(
+        2, '0')}-${calendar?.eventStartDate?.year.toString().padLeft(2, '0')}";
+    selectedDepartment = calendar?.department??"";
+    widget.event?.department = calendar?.department??"";
+    selectedVenue = calendar?.location??"";
+    eventLocation.text = calendar?.location??"";
+    widget.event?.location = calendar?.location??"";
+    currentTime = calendar?.startHour.toString().length == 1?
+    "0${calendar?.startHour}:${calendar?.startMinute.toString().padLeft(2,'0')}":
+    "${calendar?.startHour}:${calendar?.startMinute.toString().padLeft(2,'0')}";
+    endTime = calendar?.endHour.toString().length == 1?
+    "0${calendar?.endHour}:${calendar?.endMinute.toString().padLeft(2,'0')}":
+    "${calendar?.endHour}:${calendar?.endMinute.toString().padLeft(2,'0')}";
+  }
+
   @override
   void initState() {
     selectedEndTime = TimeOfDay.now();
     selectedStartTime = TimeOfDay.now();
     selectedStartDate = DateTime.now();
     selectedEndDate = DateTime.now();
+    currentTime = selectedStartTime.hour.toString().length == 1?
+    "0${selectedStartTime.hour}:${selectedStartTime.minute.toString().padLeft(2,'0')}":
+    "${selectedStartTime.hour}:${selectedStartTime.minute.toString().padLeft(2,'0')}";
+    endTime = selectedEndTime.hour.toString().length == 1?
+    "0${selectedEndTime.hour}:${selectedEndTime.minute.toString().padLeft(2,'0')}":
+    "${selectedEndTime.hour}:${selectedEndTime.minute.toString().padLeft(2,'0')}";
     currentDate = selectedStartDate?.day.toString().length == 1?
     "0${selectedStartDate?.day
         .toString()}-${selectedStartDate?.month.toString().padLeft(
@@ -230,8 +332,17 @@ class _EventPageState extends State<EventPage> {
     "${selectedEndDate?.day
         .toString()}-${selectedEndDate?.month.toString().padLeft(
         2, '0')}-${selectedEndDate?.year.toString().padLeft(2, '0')}";
+    if(widget.event!=null) {
+      initializeTextController(widget.event);
+      editEventFlag = true;
+
+    }
+    else{
+      selectedDepartment = "CCE";
+    }
     super.initState();
   }
+
   Widget setupVenueSelected() {
     return SizedBox(
       width: 300,
@@ -307,6 +418,9 @@ class _EventPageState extends State<EventPage> {
                               items: dropdownItems, onChanged: (String? value) {
                               setState(() {
                                 selectedDepartment = value??"CCE";
+                                if(widget.event!=null) {
+                                    widget.event?.department = selectedDepartment;
+                                  }
                               });
                             },
                             )
@@ -376,9 +490,7 @@ class _EventPageState extends State<EventPage> {
                                       child: Row(
                                         children: [
                                           Text(
-                                            selectedStartTime.hour.toString().length == 1?
-                                            "0${selectedStartTime.hour}:${selectedStartTime.minute.toString().padLeft(2,'0')}":
-                                            "${selectedStartTime.hour}:${selectedStartTime.minute.toString().padLeft(2,'0')}",
+                                            currentTime,
                                             maxLines: 1,
                                             style: const TextStyle(
                                                 fontSize: 18
@@ -432,9 +544,7 @@ class _EventPageState extends State<EventPage> {
                                       child: Row(
                                         children: [
                                       Text(
-                                        selectedEndTime.hour.toString().length == 1?
-                                        "0${selectedEndTime.hour}:${selectedEndTime.minute.toString().padLeft(2,'0')}":
-                                        "${selectedEndTime.hour}:${selectedEndTime.minute.toString().padLeft(2,'0')}",
+                                        endTime,
                                         maxLines: 1,
                                         style: const TextStyle(
                                             fontSize: 18
@@ -512,9 +622,35 @@ class _EventPageState extends State<EventPage> {
                     child: DlsButton(
                       text: "Save",
                       onPressed: (){
-                        CalendarEvent calendarEvent = CalendarEvent(title: eventTitle.text, description: eventDescription.text, startHour: selectedStartTime.hour, endHour: selectedEndTime.hour, startMinute: selectedStartTime.minute, endMinute: selectedEndTime.minute, eventStartDate: selectedStartDate, eventEndDate: selectedEndDate, location: eventLocation.text, notifyAll: notifyAll, department: selectedDepartment);
-                        saveEvent(calendarEvent);
-                        debugPrint("API success");
+                        if(!editEventFlag) {
+                          CalendarEvent calendarEvent = CalendarEvent(
+                              title: eventTitle.text,
+                              description: eventDescription.text,
+                              startHour: selectedStartTime.hour,
+                              endHour: selectedEndTime.hour,
+                              startMinute: selectedStartTime.minute,
+                              endMinute: selectedEndTime.minute,
+                              eventStartDate: selectedStartDate,
+                              eventEndDate: selectedEndDate,
+                              location: eventLocation.text,
+                              notifyAll: notifyAll,
+                              department: selectedDepartment,
+                              eventType: eventAnnouncement.text);
+                          saveEvent(calendarEvent);
+                          debugPrint("API success");
+                        }
+                        else{
+                         // CalendarEvent calendarEvent = CalendarEvent(eventId: widget.event?.eventId, title: eventTitle.text, description: eventDescription.text, startHour: widget.event?.startHour, endHour: widget.event?.endHour, startMinute: widget.event?.startMinute, endMinute: widget.event?.endMinute, eventStartDate: widget.event?.eventStartDate, eventEndDate: widget.event?.eventEndDate, location: eventLocation.text, notifyAll: widget.event?.notifyAll, department: widget.event?.department, eventType: widget.event?.eventType);
+                          CalendarEvent? calendarEvent = widget.event;
+                          calendarEvent?.department = selectedDepartment;
+                          calendarEvent?.title = eventTitle.text;
+                          calendarEvent?.description = eventDescription.text;
+                          calendarEvent?.location= eventLocation.text;
+                          calendarEvent?.eventType = eventAnnouncement.text;
+                          calendarEvent?.notifyAll = notifyAll;
+                          editEvent(calendarEvent);
+                          debugPrint("Edit Api Success");
+                        }
                       },
                     ),
                   )

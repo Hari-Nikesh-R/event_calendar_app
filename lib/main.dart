@@ -20,7 +20,7 @@ void main() async{
       routes: {
         '/login_page' :(context) => const LoginPage(),
         '/home_page' :(context) => const HomePage(),
-        '/event_page': (context) => const EventPage()
+        '/event_page': (context) => const EventPage(),
       }
   );
   runApp(app);
