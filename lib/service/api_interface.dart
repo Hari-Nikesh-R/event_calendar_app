@@ -123,6 +123,39 @@ class ApiInterface{
       debugPrint(e.toString());
     }
     return null;
+  }
+
+  Future<UserDetail?> updateProfile(UserDetail userDetail) async{
+    var client = Client();
+    try{
+      UserDetail detail;
+      final prefs = await SharedPreferences.getInstance();
+      var token = "Bearer ${prefs.getString(TOKEN)}";
+      var response = await client.put(Uri.parse("$AUTHENTICATION_URL/user/update/profile"), headers: {
+        "Accept": "application/json",
+        "content-type": "application/json",
+        "Authorization": token
+      }, body: userDetailToJson(userDetail));
+      if (response.statusCode == 200) {
+        Map<String, dynamic>? map = json.decode(response.body);
+        bool success = map?["success"];
+        if (success) {
+          detail = userDetailFromJsonDecode(map?["value"]);
+          return detail;
+        }
+        else {
+          //todo: Log and Handle errors.
+        }
+      }
+      else if (response.statusCode == 401) {
+        //todo: refresh Token
+      }
+    }
+    catch(e)
+    {
+      debugPrint(e.toString());
+    }
+    return null;
 
   }
   
@@ -186,56 +219,132 @@ class ApiInterface{
       debugPrint(e.toString());
     }
   }
-
-  Future<CalendarEvent?> addEvent(CalendarEvent calendarEvent) async{
+  Future<String?> deleteEvent(CalendarEvent calendarEvent) async{
     var client = Client();
     try{
       final prefs = await SharedPreferences.getInstance();
       var token = "Bearer ${prefs.getString(TOKEN)}";
-      var response = await client.post(Uri.parse("$EVENT_BACKEND_URL/events/add"),headers: {
+      var response = await client.delete(Uri.parse("$EVENT_BACKEND_URL/events/delete?id=${calendarEvent.eventId}"),headers: {
         "Accept": "application/json",
         "content-type": "application/json",
         "Authorization": token
-      },body:
-           json.encode({
-             "title":calendarEvent.title.toString(),
-             "description":calendarEvent.description.toString(),
-             "startHour":calendarEvent.startHour?.toInt(),
-             "endHour":calendarEvent.endHour?.toInt(),
-             "startMinute":calendarEvent.startMinute?.toInt(),
-             "endMinute":calendarEvent.endMinute?.toInt(),
-             "eventStartDate":calendarEvent.eventStartDate?.toIso8601String(),
-             "eventEndDate":calendarEvent.eventEndDate?.toIso8601String(),
-             "location":calendarEvent.location.toString(),
-             "department":calendarEvent.department.toString(),
-             "eventType":""
-           }));
+      });
       if(response.statusCode == 200) {
         Map<String, dynamic>? map = json.decode(response.body);
         bool success = map?["success"];
         if(success) {
-          CalendarEvent res = calendarEventFromJsonWithDecode(map?["value"]);
-          debugPrint(res.toJson().toString());
-          return res;
+          return map?["value"];
         }
-        else{
-          //todo: Log and Handle errors.
-          String error = map?["error"];
-          if(error.isNotEmpty) {
-            calendarEvent.error = error;
-          }
-          return calendarEvent;
-        }
-        }
-      else if(response.statusCode == 401)
-        {
-          //todo: refresh Token
-        }
+      }
+      else if(response.statusCode == 401){
+        //todo: Handle refresh token
+      }
     }
-    catch(e)
-    {
+    catch(e){
       debugPrint(e.toString());
     }
     return null;
   }
+
+  Future<CalendarEvent?> addEvent(CalendarEvent calendarEvent) async {
+    var client = Client();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      var token = "Bearer ${prefs.getString(TOKEN)}";
+      var response = await client.post(
+          Uri.parse("$EVENT_BACKEND_URL/events/add"), headers: {
+        "Accept": "application/json",
+        "content-type": "application/json",
+        "Authorization": token
+      }, body:
+      json.encode({
+        "title": calendarEvent.title.toString(),
+        "description": calendarEvent.description.toString(),
+        "startHour": calendarEvent.startHour?.toInt(),
+        "endHour": calendarEvent.endHour?.toInt(),
+        "startMinute": calendarEvent.startMinute?.toInt(),
+        "endMinute": calendarEvent.endMinute?.toInt(),
+        "eventStartDate": calendarEvent.eventStartDate?.toIso8601String(),
+        "eventEndDate": calendarEvent.eventEndDate?.toIso8601String(),
+        "location": calendarEvent.location.toString(),
+        "department": calendarEvent.department.toString(),
+        "eventType": ""
+      }));
+      if (response.statusCode == 200) {
+        Map<String, dynamic>? map = json.decode(response.body);
+        bool success = map?["success"];
+        if (success) {
+          CalendarEvent res = calendarEventFromJsonWithDecode(map?["value"]);
+          debugPrint(res.toJson().toString());
+          return res;
+        }
+        else {
+          //todo: Log and Handle errors.
+          String error = map?["error"];
+          if (error.isNotEmpty) {
+            calendarEvent.error = error;
+          }
+          return calendarEvent;
+        }
+      }
+      else if (response.statusCode == 401) {
+        //todo: refresh Token
+      }
+    }
+    catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+    Future<String?> editEvent(CalendarEvent? calendarEvent) async{
+      var client = Client();
+      try{
+        final prefs = await SharedPreferences.getInstance();
+        var token = "Bearer ${prefs.getString(TOKEN)}";
+        var response = await client.put(Uri.parse("$EVENT_BACKEND_URL/events/modify"),headers: {
+          "Accept": "application/json",
+          "content-type": "application/json",
+          "Authorization": token
+        },body:
+        json.encode({
+          "createdBy":calendarEvent?.createdBy.toString(),
+          "created": calendarEvent?.created?.toIso8601String(),
+          "eventId":calendarEvent?.eventId.toString(),
+          "title":calendarEvent?.title.toString(),
+          "description":calendarEvent?.description.toString(),
+          "startHour":calendarEvent?.startHour?.toInt(),
+          "endHour":calendarEvent?.endHour?.toInt(),
+          "startMinute":calendarEvent?.startMinute?.toInt(),
+          "endMinute":calendarEvent?.endMinute?.toInt(),
+          "eventStartDate":calendarEvent?.eventStartDate?.toIso8601String(),
+          "eventEndDate":calendarEvent?.eventEndDate?.toIso8601String(),
+          "location":calendarEvent?.location.toString(),
+          "department":calendarEvent?.department.toString(),
+          "eventType":calendarEvent?.eventType.toString()
+        }));
+        if(response.statusCode == 200) {
+          Map<String, dynamic>? map = json.decode(response.body);
+          bool success = map?["success"];
+          if(success) {
+            return map?["value"];
+          }
+          else{
+            //todo: Log and Handle errors.
+            String error = map?["error"];
+            if(error.isNotEmpty) {
+              return error;
+            }
+          }
+        }
+        else if(response.statusCode == 401)
+        {
+          //todo: refresh Token
+        }
+      }
+      catch(e)
+      {
+        debugPrint(e.toString());
+      }
+      return null;
+    }
 }

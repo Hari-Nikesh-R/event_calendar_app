@@ -3,6 +3,7 @@ import 'package:sece_event_calendar/components/login/login_page.dart';
 import 'package:sece_event_calendar/dls/custombutton.dart';
 import 'package:sece_event_calendar/dls/customcartview.dart';
 import 'package:sece_event_calendar/dls/customedittext.dart';
+import 'package:sece_event_calendar/dls/customeventicon.dart';
 import 'package:sece_event_calendar/model/userdetail.dart';
 import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,6 +25,17 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController emailField = TextEditingController();
   TextEditingController phoneNumberField = TextEditingController();
   TextEditingController organizationField = TextEditingController();
+  TextEditingController passwordField = TextEditingController();
+
+  bool isObscured = true;
+
+
+  updateProfile(UserDetail detail) async{
+    userDetail = await ApiInterface().updateProfile(detail);
+    setState(() {
+      userDetail = userDetail;
+    });
+  }
 
   UserDetail? userDetail;
   getUserDetails() async{
@@ -70,6 +82,12 @@ class _ProfilePageState extends State<ProfilePage> {
               image: DecorationImage(
                   image: AssetImage("assets/home/profilebg.png"),
                   fit: BoxFit.fill)),
+        ),
+        GestureDetector(
+          onTap: (){
+            Navigator.pop(context);
+          },
+          child:const CustomEventIcon(iconResource: Icons.close)
         ),
         Align(
             alignment: Alignment.bottomCenter,
@@ -167,10 +185,38 @@ class _ProfilePageState extends State<ProfilePage> {
                                   )),
                                   CustomEditText(textField: firstNameField, hintText: "First Name"),
                                   CustomEditText(textField: lastNameField, hintText: "Last Name"),
-                                  CustomEditText(textField: emailField, hintText:"Email"),
                                   CustomEditText(textField: phoneNumberField, hintText:"Phone number"),
                                   CustomEditText(textField: organizationField, hintText: "Organization"),
-                                  Center(child: DlsButton(text: "Save", onPressed: (){},),)
+                                // Container(
+                                //     margin: const EdgeInsets.all(16),
+                                //     child: TextFormField(
+                                //       controller: passwordField,
+                                //       maxLines: 1,
+                                //       obscureText: isObscured,
+                                //       decoration: InputDecoration(
+                                //           hintText: 'password',
+                                //           fillColor: Colors.white,
+                                //           filled: true,
+                                //           suffixIcon:IconButton(icon: isObscured?const Icon(Icons.visibility, color: Colors.black,) :
+                                //           const Icon(Icons.visibility_off, color: Colors.black,),
+                                //             onPressed: (){
+                                //               setState(() {
+                                //                 isObscured = !isObscured;
+                                //               });
+                                //             },),
+                                //           enabledBorder: OutlineInputBorder(
+                                //               borderRadius: BorderRadius.circular(12),
+                                //               borderSide:const BorderSide(
+                                //                   color: Colors.blue
+                                //               )
+                                //           )
+                                //       ),
+                                //     )),
+                                  Center(child: DlsButton(text: "Save", onPressed: (){
+                                    UserDetail detail = UserDetail(firstName: firstNameField.text, lastName: lastNameField.text, organization: organizationField.text, phoneNumber: phoneNumberField.text);
+                                    updateProfile(detail);
+                                    Navigator.pop(context);
+                                  },),)
                                 ],
                               ))));
                             });

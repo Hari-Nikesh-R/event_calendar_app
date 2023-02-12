@@ -74,6 +74,10 @@ class EventController<T extends Object?> extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clear(){
+    _calendarData.events.clear();
+  }
+
   /// Removes [event] from this controller.
   void remove(CalendarEventData<T> event) {
     final date = event.date.withoutTime;

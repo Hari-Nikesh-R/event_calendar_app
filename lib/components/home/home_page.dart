@@ -56,6 +56,7 @@ class _HomePageState extends State<HomePage> {
     allEvents = await ApiInterface().getAllEvents();
     setState(() {
       debugPrint(allEvents.toString());
+      eventController.clear();
       allEvents = allEvents;
     });
     setEventInCalendar(allEvents);

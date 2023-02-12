@@ -8,24 +8,24 @@ String userDetailToJson(UserDetail data) => json.encode(data.toJson());
 
 class UserDetail {
   UserDetail({
-    required this.email,
+    this.email,
     this.profilePicture,
     required this.firstName,
     required this.lastName,
     required this.organization,
     required this.phoneNumber,
-    required this.password,
+    this.password,
     this.organizationalAddress,
     this.authority,
   });
 
-  String email;
+  String? email;
   String? profilePicture;
   String firstName;
   String lastName;
   String organization;
   String phoneNumber;
-  String password;
+  String? password;
   dynamic organizationalAddress;
   bool? authority;
 

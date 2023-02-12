@@ -617,13 +617,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       ),
     );
   }
-  CalendarEvent? calendarEvent;
-  getCalendarDetail(String title, String description) async{
-    calendarEvent = await ApiInterface().getCalendarDetail(title,description);
-    setState(() {
-      calendarEvent = calendarEvent;
-    });
-  }
+
 
   /// Default timeline builder. This builder will be used if
   /// [widget.eventTileBuilder] is null
@@ -638,9 +632,10 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         onTap: (){
           debugPrint("Clicked week event");
           String department = Utility().getDepartmentColor(events[0].color);
-          getCalendarDetail(events[0].title,events[0].description);
-          Navigator.push(context, MaterialPageRoute(builder: (context) =>  EventDetailPage(event: calendarEvent,department: department)));
-        },
+          setState(() {
+            Navigator.push(context, MaterialPageRoute(builder: (context) =>  EventDetailPage(title: events[0].title, description: events[0].description, department: department)));
+          });
+          },
         child: RoundedEventTile(
         borderRadius: BorderRadius.circular(6.0),
         title: events[0].title,
