@@ -9,6 +9,7 @@ import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/constants.dart';
+import 'home_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -85,7 +86,11 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         GestureDetector(
           onTap: (){
-            Navigator.pop(context);
+            Navigator.pushAndRemoveUntil<void>(
+                context,
+                MaterialPageRoute<void>(
+                builder: (BuildContext context) => const HomePage()),
+            ModalRoute.withName("/home_page"));
           },
           child:const CustomEventIcon(iconResource: Icons.close)
         ),

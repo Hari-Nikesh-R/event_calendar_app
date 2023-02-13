@@ -125,6 +125,35 @@ class ApiInterface{
     return null;
   }
 
+  Future<bool> isAuthorizedUser() async{
+    var client = Client();
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      var token = "Bearer ${prefs.getString(TOKEN)}";
+      var response = await client.get(Uri.parse("$AUTHENTICATION_URL/user/is-authorized"), headers: {
+      "Accept": "application/json",
+      "content-type": "application/json",
+      "Authorization": token
+      });
+      if(response.statusCode == 200) {
+        Map<String, dynamic>? map = json.decode(response.body);
+        bool success = map?["success"];
+        return success;
+      }
+      else if(response.statusCode == 401){
+        // todo: refresh the token
+      }
+      else if(response.statusCode == 500){
+        //todo: Show dialog box;
+      }
+    }
+    catch(e){
+     debugPrint(e.toString());
+    }
+    return false;
+
+  }
+
   Future<UserDetail?> updateProfile(UserDetail userDetail) async{
     var client = Client();
     try{

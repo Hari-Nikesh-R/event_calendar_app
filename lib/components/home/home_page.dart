@@ -1,8 +1,10 @@
+
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:sece_event_calendar/components/home/profile_page.dart';
 import 'package:sece_event_calendar/model/calendar_event.dart';
+import 'package:sece_event_calendar/model/userdetail.dart';
 import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:sece_event_calendar/utils/colors.dart';
 import 'package:sece_event_calendar/utils/constants.dart';
@@ -31,11 +33,24 @@ class _HomePageState extends State<HomePage> {
   Widget calendarIcon = const Icon(Icons.calendar_view_week);
   EventController eventController = EventController();
   bool toggleMenu = false;
-
+  UserDetail? userDetail;
   DateTime get _now => DateTime.now();
   Future<void> successLogin() async{
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(ISLOGIN, true);
+
+  }
+
+  getUserDetails() async {
+    userDetail = await ApiInterface().getUserDetails();
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userDetail = userDetail;
+      prefs.setBool(ISAUTHORIZED, userDetail?.authority??false);
+    });
+  }
+  bool createVisibility(){
+    return userDetail?.authority??false;
   }
 
   @override
@@ -44,6 +59,7 @@ class _HomePageState extends State<HomePage> {
       getAllEvent();
     });
     successLogin();
+    getUserDetails();
     view = 1;
     calendarView = WEEK_VIEW;
     calendarIcon = const Icon(Icons.calendar_view_week);
@@ -125,12 +141,13 @@ class _HomePageState extends State<HomePage> {
            },
          ),
          home: Scaffold(
-           floatingActionButton: FloatingActionButton(heroTag: "create", onPressed: (){
+           floatingActionButton: Visibility(visible: createVisibility(),child: FloatingActionButton(heroTag: "create", onPressed: (){
+
            Navigator.push(context, MaterialPageRoute(builder: (context) =>const EventPage()));
              },
              backgroundColor: THEME_COLOR,
                child: const Icon(Icons.add,color: Colors.white)
-           ),
+           )),
            body: Stack(
              children: [
                 decideCalendarView(),
