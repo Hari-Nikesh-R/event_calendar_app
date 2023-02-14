@@ -12,4 +12,5 @@ const String PLACEMENT = "PLACEMENT";
 const String TRAINING = "TRAINING";
 
 const String TOKEN = "TOKEN";
+const String ISAUTHORIZED = "ISAUTHORIZED";
 const String ISLOGIN = "isLogined";

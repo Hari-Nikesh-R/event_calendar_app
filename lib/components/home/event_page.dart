@@ -376,7 +376,11 @@ class _EventPageState extends State<EventPage> {
                 children:  [
                    Padding(padding: const EdgeInsets.all(12),child: IconButton(icon:const Icon(Icons.close, size: 30,color: Colors.black),
                     onPressed: (){
-                        Navigator.pop(context);
+                      Navigator.pushAndRemoveUntil<void>(
+                          context,
+                          MaterialPageRoute<void>(
+                              builder: (BuildContext context) => const HomePage()),
+                          ModalRoute.withName("/home_page"));
                   },)),
                   CustomEditText(hintText: "Title*",sufficeIcon: const Icon(Icons.title, color: Colors.black,size: 25,), textField: eventTitle),
                   Container(

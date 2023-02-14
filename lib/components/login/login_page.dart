@@ -36,8 +36,6 @@ class _LoginPageState extends State<LoginPage> {
         });
       }
       else if(token.isNotEmpty){
-        final prefs = await SharedPreferences.getInstance();
-        prefs.setString(TOKEN, token);
         setState(() {
           Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
         });
