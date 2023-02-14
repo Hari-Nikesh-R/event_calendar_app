@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:sece_event_calendar/components/home/home_page.dart';
+import 'package:sece_event_calendar/model/authority.dart';
 import 'package:sece_event_calendar/utils/urls.dart';
 import 'package:sece_event_calendar/utils/utility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,7 +39,6 @@ class ApiInterface{
       debugPrint(e.toString());
     }
     return mailMessage;
-
   }
 
   Future<String> authenticate(String email, String password) async
@@ -46,7 +46,8 @@ class ApiInterface{
     String token = "";
     var client = Client();
     try{
-      var response =await client.post(Uri.parse("$AUTHENTICATION_URL/authenticate"  ),headers: {
+      final prefs = await SharedPreferences.getInstance();
+      var response =await client.post(Uri.parse("$AUTHENTICATION_URL/authenticate"),headers: {
         "Accept": "application/json",
         "content-type": "application/json",
       },body: json.encode({
@@ -56,6 +57,7 @@ class ApiInterface{
       if(response.statusCode==200) {
         Map<String, dynamic>? map = json.decode(response.body);
         token = map?["token"];
+        prefs.setString(TOKEN, token);
         return token;
       }
       else if(response.statusCode ==401) {
@@ -185,7 +187,39 @@ class ApiInterface{
       debugPrint(e.toString());
     }
     return null;
-
+  }
+  
+  Future<List<Authority>?> getUserAuthority() async{
+    var client = Client();
+     List<Authority> authority = [];
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      var token = "Bearer ${prefs.getString(TOKEN)}";
+      var response = await client.get(
+          Uri.parse("$AUTHENTICATION_URL/user/getAllUser"), headers: {
+        "Accept": "application/json",
+        "content-type": "application/json",
+        "Authorization": token
+      });
+      if (response.statusCode == 200) {
+        Map<String, dynamic>? map = json.decode(response.body);
+        bool success = map?["success"];
+        if (success) {
+          List<dynamic>? res = map?["value"];
+          res?.forEach((element) {
+            authority.add(authorityFromJsonWithDecode(element));
+          });
+          return authority;
+        }
+      }
+      else if(response.statusCode == 401) {
+        // todo: refresh token
+      }
+    }
+    catch(e){
+      debugPrint(e.toString());
+    }
+    return null;
   }
   
   Future<UserDetail?> getUserDetails() async{

@@ -2,6 +2,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:sece_event_calendar/components/home/admin_page.dart';
 import 'package:sece_event_calendar/components/home/profile_page.dart';
 import 'package:sece_event_calendar/model/calendar_event.dart';
 import 'package:sece_event_calendar/model/userdetail.dart';
@@ -193,6 +194,11 @@ class _HomePageState extends State<HomePage> {
                             FloatingActionButton(heroTag:"profile",backgroundColor: THEME_COLOR,onPressed: (){
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
                             },child: const Icon(Icons.person_outline))),
+                            const Padding(padding: EdgeInsets.only(right: 12)),
+                            Visibility(visible: toggleMenu && userDetail?.email == "hari.nikesh.r.cce@sece.ac.in",child:
+                            FloatingActionButton(heroTag:"adminAuthority",backgroundColor: THEME_COLOR,onPressed: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminPage()));
+                            },child: const Icon(Icons.admin_panel_settings)))
                           ]
                         )),),
              ],
