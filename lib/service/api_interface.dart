@@ -41,6 +41,34 @@ class ApiInterface{
     return mailMessage;
   }
 
+  Future<String?> updateAuthority(String email, bool authorized) async{
+    var client = Client();
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      var token = "Bearer ${prefs.getString(TOKEN)}";
+      var response =await client.put(Uri.parse("$AUTHENTICATION_URL/user/authority"),headers: {
+        "Accept": "application/json",
+        "content-type": "application/json",
+        "Authorization": token
+      },body: authorityToJson(Authority(email: email, authorized: authorized)));
+      if(response.statusCode == 200){
+        Map<String, dynamic>? map = json.decode(response.body);
+        if(map?["success"]){
+          return "UPDATED SUCCESSFULLY";
+        }
+        debugPrint(map.toString());
+      }
+      else if(response.statusCode == 401){
+        //todo: implement refresh token
+      }
+    }
+    catch(e)
+    {
+      debugPrint(e.toString());
+    }
+    return "NOT UPDATED";
+  }
+
   Future<String> authenticate(String email, String password) async
   {
     String token = "";

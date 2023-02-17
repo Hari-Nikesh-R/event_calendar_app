@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sece_event_calendar/components/home/home_page.dart';
+import 'package:sece_event_calendar/components/login/forgotpassword_page.dart';
 import 'package:sece_event_calendar/components/login/signup_page.dart';
 import 'package:sece_event_calendar/dls/custombutton.dart';
 import 'package:sece_event_calendar/dls/customedittext.dart';
@@ -37,7 +38,11 @@ class _LoginPageState extends State<LoginPage> {
       }
       else if(token.isNotEmpty){
         setState(() {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
+          Navigator.pushAndRemoveUntil<void>(
+              context,
+              MaterialPageRoute<void>(
+                  builder: (BuildContext context) => const HomePage()),
+              ModalRoute.withName("/"));
         });
       }
       else{
@@ -122,6 +127,12 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(padding: const EdgeInsets.only(top: 12), child: DlsButton(text: "LOG IN", onPressed: (){
                   authenticateUserApi();
                     })),
+               GestureDetector(onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const EmailEntryPage()));
+               },child: const Padding(padding: EdgeInsets.symmetric(vertical: 6),child: Text("Forgot password?", style: TextStyle(
+                 color: Colors.blueAccent,
+                 fontSize: 16,
+               ),),)),
                const Padding(padding: EdgeInsets.only(top: 20)),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

@@ -8,12 +8,12 @@ Authority authorityFromJsonWithDecode(Map<String, dynamic> json) => Authority.fr
 
 class Authority {
   Authority({
-    required this.email,
-    required this.authorized,
+     this.email,
+     this.authorized,
   });
 
-  String email;
-  bool authorized;
+  String? email;
+  bool? authorized;
 
   factory Authority.fromJson(Map<String, dynamic> json) => Authority(
     email: json["email"],
