@@ -12,6 +12,8 @@ class Utility{
     return _singleton;
   }
 
+
+
   String setDepartmentBackGround(String department) {
     switch (department) {
       case CCE:

@@ -41,6 +41,34 @@ class ApiInterface{
     return mailMessage;
   }
 
+  Future<String?> updateAuthority(String email, bool authorized) async{
+    var client = Client();
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      var token = "Bearer ${prefs.getString(TOKEN)}";
+      var response =await client.put(Uri.parse("$AUTHENTICATION_URL/user/authority"),headers: {
+        "Accept": "application/json",
+        "content-type": "application/json",
+        "Authorization": token
+      },body: authorityToJson(Authority(email: email, authorized: authorized)));
+      if(response.statusCode == 200){
+        Map<String, dynamic>? map = json.decode(response.body);
+        if(map?["success"]){
+          return "UPDATED SUCCESSFULLY";
+        }
+        debugPrint(map.toString());
+      }
+      else if(response.statusCode == 401){
+        //todo: implement refresh token
+      }
+    }
+    catch(e)
+    {
+      debugPrint(e.toString());
+    }
+    return "NOT UPDATED";
+  }
+
   Future<String> authenticate(String email, String password) async
   {
     String token = "";
@@ -98,6 +126,95 @@ class ApiInterface{
       debugPrint(e.toString());
     }
     return eventList;
+  }
+
+  Future<String?> changePassword(String password) async{
+    String verificationMessage;
+    var client = Client();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      var response = await client.put(
+          Uri.parse("$AUTHENTICATION_URL/user/change/password"),
+          headers: {
+            "Accept": "application/json",
+            "content-type": "application/json",
+          }, body: json.encode({
+        "email": prefs.get("Email"),
+        "password":password
+      }));
+      if (response.statusCode == 200) {
+        Map<String, dynamic>? map = json.decode(response.body);
+        verificationMessage = map?["value"];
+        return verificationMessage;
+      }
+      else if(response.statusCode == 401){
+        // todo: Refresh dialog
+      }
+      else if (response.statusCode == 500) {
+        //todo: Handle Internal error with dialog
+      }
+    }
+    catch(e)
+    {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+  
+  Future<bool?> verifyEmail(String email) async{
+    bool registered = false;
+    var client = Client();
+    try {
+      var response = await client.post(
+          Uri.parse("$MAIL_URL/admin/forgot-password/$email"),
+          headers: {
+            "Accept": "application/json",
+            "content-type": "application/json",
+          });
+      if (response.statusCode == 200) {
+          return json.decode(response.body);
+      }
+      else if(response.statusCode == 401){
+        // todo: Refresh dialog
+      }
+      else if (response.statusCode == 500) {
+        //todo: Handle Internal error with dialog
+      }
+      return registered;
+    }
+    catch(e)
+    {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+  Future<String?> verifyForgotPasswordCode(String? email, String code) async{
+    String registered = "";
+    var client = Client();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString("ForgetPasswordCode", code);
+      var response = await client.post(
+          Uri.parse("$MAIL_URL/verify/$email/$code"),
+          headers: {
+            "Accept": "application/json",
+            "content-type": "application/json",
+          });
+      if (response.statusCode == 200) {
+        Map<String, dynamic>? map = json.decode(response.body);
+        registered = map?["value"];
+        return registered;
+      }
+      else if (response.statusCode == 500) {
+        //todo: Handle Internal error with dialog
+      }
+      return registered;
+    }
+    catch(e)
+    {
+      debugPrint(e.toString());
+    }
+    return null;
   }
 
   Future<String?> verifyRegistrationCode(UserDetail userDetail, String code) async{

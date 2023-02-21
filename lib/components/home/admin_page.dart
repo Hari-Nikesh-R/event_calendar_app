@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:sece_event_calendar/dls/custombutton.dart';
 import 'package:sece_event_calendar/model/authority.dart';
@@ -22,7 +24,6 @@ class _AdminPageState extends State<AdminPage> {
     authorityList = await ApiInterface().getUserAuthority();
     setState(() {
       authorityList = authorityList;
-      searchList = authorityList;
     });
   }
 
@@ -42,14 +43,6 @@ class _AdminPageState extends State<AdminPage> {
             controller: searchField,
             onChanged: (value){
               setState(() {
-                debugPrint(value);
-                searchList?.clear();
-                authorityList?.forEach((element) {
-                  if(element.email.contains(value)){
-                    searchList?.add(element);
-                  }
-                });
-
               });
             },
             decoration: InputDecoration(
@@ -73,21 +66,16 @@ class _AdminPageState extends State<AdminPage> {
     )
             ),
           )),
+          (authorityList!=null)?
           Padding(padding: const EdgeInsets.symmetric(vertical: 100), child: ListView.builder(itemCount:authorityList?.length, itemBuilder:  (context,index) {
             return UserListCard(authority: authorityList?[index]);
           })
-          ),
-          Align(alignment: Alignment.bottomCenter, child: DlsButton(
-            onPressed: (){
-              //todo: API call for saving authorities
-            }, text: "Save",
-          ),)
+          ):const Padding(padding: EdgeInsets.symmetric(vertical: 100)),
         ]
       )
     );
   }
 }
-
 class UserListCard extends StatefulWidget {
   const UserListCard({super.key, required this.authority});
   final Authority? authority;
@@ -97,9 +85,27 @@ class UserListCard extends StatefulWidget {
 }
 
 class _UserListCardState extends State<UserListCard> {
+  bool isAuthorized = false;
+  String authorityRole = "ADMIN";
+  Map<String,String> newAuthority = HashMap<String, String>();
+  List<Authority>? updateAuthorityList = [];
+  String? updateMessage;
+
+  updateAuthority(bool authorized) async{
+    debugPrint(widget.authority?.email??""+ " "+authorized.toString());
+   updateMessage = await ApiInterface().updateAuthority(widget.authority?.email??"",authorized);
+   debugPrint(updateMessage);
+  }
+  
   @override
   void initState() {
-    // TODO: implement initState
+    isAuthorized = widget.authority?.authorized??false;
+    if(isAuthorized){
+      authorityRole = "ADMIN";
+    }
+    else{
+      authorityRole = "USER";
+    }
     super.initState();
   }
   @override
@@ -117,14 +123,18 @@ class _UserListCardState extends State<UserListCard> {
           children: [
             Text(widget.authority?.email??""),
             Card(
-              color: widget.authority?.authorized??false?THEME_COLOR:Colors.white,
+              color: isAuthorized?THEME_COLOR:Colors.white,
               elevation: 8,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24)
               ), child: Padding(padding: const EdgeInsets.all(12),child: GestureDetector(onTap: (){
-             
-            },child:Text(widget.authority?.authorized??false?"ADMIN":"USER", style: TextStyle(
-              color: widget.authority?.authorized??false?Colors.white:Colors.black))
+                setState(() {
+                  isAuthorized = !isAuthorized;
+                  isAuthorized ? authorityRole = "ADMIN": authorityRole = "USER";
+                  updateAuthority(isAuthorized);
+                });
+            },child:Text(authorityRole, style: TextStyle(
+              color: isAuthorized?Colors.white:Colors.black))
             ),)
             )
           ],
