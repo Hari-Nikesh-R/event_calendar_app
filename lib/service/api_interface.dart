@@ -86,6 +86,7 @@ class ApiInterface{
         Map<String, dynamic>? map = json.decode(response.body);
         token = map?["token"];
         prefs.setString(TOKEN, token);
+        prefs.setString("Email", email);
         return token;
       }
       else if(response.statusCode ==401) {
@@ -128,7 +129,7 @@ class ApiInterface{
     return eventList;
   }
 
-  Future<String?> changePassword(String password) async{
+  Future<String?> changePassword(String? email,String password) async{
     String verificationMessage;
     var client = Client();
     try {
@@ -139,7 +140,7 @@ class ApiInterface{
             "Accept": "application/json",
             "content-type": "application/json",
           }, body: json.encode({
-        "email": prefs.get("Email"),
+        "email":email,
         "password":password
       }));
       if (response.statusCode == 200) {
@@ -172,7 +173,8 @@ class ApiInterface{
             "content-type": "application/json",
           });
       if (response.statusCode == 200) {
-          return json.decode(response.body);
+        Map<String, dynamic>? map = json.decode(response.body);
+        return map?["success"];
       }
       else if(response.statusCode == 401){
         // todo: Refresh dialog
@@ -193,16 +195,15 @@ class ApiInterface{
     var client = Client();
     try {
       final prefs = await SharedPreferences.getInstance();
-      prefs.setString("ForgetPasswordCode", code);
       var response = await client.post(
-          Uri.parse("$MAIL_URL/verify/$email/$code"),
+          Uri.parse("$MAIL_URL/admin/verify/$email/$code"),
           headers: {
             "Accept": "application/json",
             "content-type": "application/json",
           });
       if (response.statusCode == 200) {
         Map<String, dynamic>? map = json.decode(response.body);
-        registered = map?["value"];
+          registered = map?["value"];
         return registered;
       }
       else if (response.statusCode == 500) {

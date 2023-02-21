@@ -20,7 +20,6 @@ void main() async{
         '/login_page' :(context) => const LoginPage(),
         '/home_page' :(context) => const HomePage(),
         '/event_page': (context) => const EventPage(),
-        '/change_password_page' : (context) => const ChangePasswordPage()
       }
   );
   runApp(app);

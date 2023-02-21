@@ -59,20 +59,22 @@ class _EmailEntryPageState extends State<EmailEntryPage> {
 }
 
 class ChangePasswordPage extends StatefulWidget {
-  const ChangePasswordPage({Key? key}) : super(key: key);
+  const ChangePasswordPage({super.key, required this.email});
+  final String? email;
 
   @override
   State<ChangePasswordPage> createState() => _ChangePasswordPageState();
 }
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
-  TextEditingController emailField = TextEditingController();
   TextEditingController passwordField = TextEditingController();
-  bool isObscured = false;
+  TextEditingController confirmPasswordField = TextEditingController();
+  bool isObscured = true;
+  bool confirmPassObscured = true;
   String? verificationMessage;
 
   changePassword() async{
-    verificationMessage = await ApiInterface().changePassword(passwordField.text);
+    verificationMessage = await ApiInterface().changePassword(widget.email,passwordField.text);
     if(verificationMessage == UPDATE_PASSWORD){
       setState(() {
         Navigator.pushNamedAndRemoveUntil(context, "/login_page", ModalRoute.withName('/'));
@@ -86,7 +88,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   @override
   void initState() {
     // TODO: implement initState
-    isObscured = false;
+    isObscured = true;
+    confirmPassObscured = true;
     super.initState();
   }
   @override
@@ -100,24 +103,48 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text("ChANge PaSSWorD", style: TextStyle(
+              const Text("ChANgE PaSSWorD", style: TextStyle(
                 color: Colors.black,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),),
-              CustomEditText(textField: emailField, hintText: 'Email'),
-            TextFormField(
-              controller: passwordField,
-              obscureText: isObscured,
+              Container(
+                  margin: const EdgeInsets.all(16),
+                  child: TextFormField(
+                      controller: passwordField,
+                      obscureText: isObscured,
+                      decoration: InputDecoration(
+                          hintText: "Password",
+                          fillColor: Colors.white,
+                          filled: true,
+                          suffixIcon: IconButton(icon: isObscured?const Icon(Icons.visibility, color: Colors.black,) :
+                          const Icon(Icons.visibility_off, color: Colors.black,),
+                            onPressed: (){
+                              setState(() {
+                                isObscured = !isObscured;
+                              });
+                            },),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:const BorderSide(
+                                  color: Colors.blue
+                              )
+                          )
+                      ))),
+            Container(
+              margin: const EdgeInsets.all(16),
+              child: TextFormField(
+              controller: confirmPasswordField,
+              obscureText: confirmPassObscured,
               decoration: InputDecoration(
-                  hintText: "Password",
+                  hintText: "Confirm Password",
                   fillColor: Colors.white,
                   filled: true,
-                  suffixIcon: IconButton(icon: isObscured?const Icon(Icons.visibility, color: Colors.black,) :
+                  suffixIcon: IconButton(icon: confirmPassObscured?const Icon(Icons.visibility, color: Colors.black,) :
                   const Icon(Icons.visibility_off, color: Colors.black,),
                     onPressed: (){
                       setState(() {
-                        isObscured = !isObscured;
+                        confirmPassObscured = !confirmPassObscured;
                       });
                     },),
                   enabledBorder: OutlineInputBorder(
@@ -126,9 +153,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           color: Colors.blue
                       )
                   )
-              ),
-            ),DlsButton(text: "Save", onPressed: (){
-
+              ))),DlsButton(text: "Save", onPressed: (){
+                  changePassword();
               })
             ],
           ),

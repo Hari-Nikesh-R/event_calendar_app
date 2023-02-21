@@ -27,8 +27,6 @@ class _LoginPageState extends State<LoginPage> {
 
   void authenticateUserApi() async{
     String token  = await ApiInterface().authenticate(emailField.text, passwordField.text);
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString("Email", emailField.text);
     try {
     debugPrint("Token: $token");
       if (token == "false") {
