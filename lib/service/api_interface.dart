@@ -59,7 +59,7 @@ class ApiInterface{
         debugPrint(map.toString());
       }
       else if(response.statusCode == 401){
-        //todo: implement refresh token
+        getRefreshToken();
       }
     }
     catch(e)
@@ -90,7 +90,7 @@ class ApiInterface{
         return token;
       }
       else if(response.statusCode ==401) {
-        return "false";
+        getRefreshToken();
       }
     }
     catch(e){
@@ -119,7 +119,7 @@ class ApiInterface{
           return eventList;
         }
         else if(response.statusCode == 401){
-          //todo: Handle refresh token
+          getRefreshToken();
         }
 
       }
@@ -149,7 +149,7 @@ class ApiInterface{
         return verificationMessage;
       }
       else if(response.statusCode == 401){
-        // todo: Refresh dialog
+        getRefreshToken();
       }
       else if (response.statusCode == 500) {
         //todo: Handle Internal error with dialog
@@ -160,6 +160,33 @@ class ApiInterface{
       debugPrint(e.toString());
     }
     return null;
+  }
+
+  Future<void> getRefreshToken() async{
+    String token = "";
+    try{
+      Client client = Client();
+      final prefs = await SharedPreferences.getInstance();
+      var response = await client.get(Uri.parse("$AUTHENTICATION_URL/refreshtoken"), headers: {
+        "Accept": "application/json",
+        "content-type": "application/json",
+        "Authorization": "Bearer ${prefs.getString(TOKEN)}",
+        "isRefreshToken": "true"
+      });
+      if(response.statusCode == 200){
+        Map<String, dynamic>? map = json.decode(response.body);
+        token = map?["token"];
+        prefs.setString(TOKEN, token);
+        Utility().tokenRefreshed = true;
+        debugPrint("Token fetched and added");
+      }
+      else if(response.statusCode == 401){
+         debugPrint("Session Expired");
+      }
+    }
+    catch(e){
+      debugPrint(e.toString());
+    }
   }
   
   Future<bool?> verifyEmail(String email) async{
@@ -177,7 +204,7 @@ class ApiInterface{
         return map?["success"];
       }
       else if(response.statusCode == 401){
-        // todo: Refresh dialog
+        getRefreshToken();
       }
       else if (response.statusCode == 500) {
         //todo: Handle Internal error with dialog
@@ -261,7 +288,7 @@ class ApiInterface{
         return success;
       }
       else if(response.statusCode == 401){
-        // todo: refresh the token
+        getRefreshToken();
       }
       else if(response.statusCode == 500){
         //todo: Show dialog box;
@@ -297,7 +324,7 @@ class ApiInterface{
         }
       }
       else if (response.statusCode == 401) {
-        //todo: refresh Token
+        getRefreshToken();
       }
     }
     catch(e)
@@ -331,7 +358,7 @@ class ApiInterface{
         }
       }
       else if(response.statusCode == 401) {
-        // todo: refresh token
+        getRefreshToken();
       }
     }
     catch(e){
@@ -363,7 +390,7 @@ class ApiInterface{
         }
       }
       else if (response.statusCode == 401) {
-        //todo: refresh Token
+        getRefreshToken();
       }
 
     }
@@ -393,7 +420,7 @@ class ApiInterface{
         }
         }
       else if(response.statusCode == 401){
-        //todo: Handle refresh token
+        getRefreshToken();
       }
     }
     catch(e){
@@ -418,7 +445,7 @@ class ApiInterface{
         }
       }
       else if(response.statusCode == 401){
-        //todo: Handle refresh token
+        getRefreshToken();
       }
     }
     catch(e){
@@ -469,7 +496,7 @@ class ApiInterface{
         }
       }
       else if (response.statusCode == 401) {
-        //todo: refresh Token
+        getRefreshToken();
       }
     }
     catch (e) {
@@ -519,7 +546,7 @@ class ApiInterface{
         }
         else if(response.statusCode == 401)
         {
-          //todo: refresh Token
+          getRefreshToken();
         }
       }
       catch(e)

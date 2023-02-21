@@ -61,7 +61,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
   }
   @override
   void initState() {
-    // TODO: implement initState
     setState(() {
       getCalendarDetail(widget.title??"", widget.description??"", widget.department);
     });
@@ -71,6 +70,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
   
   @override
   Widget build(BuildContext context) {
+    if(Utility().tokenRefreshed){
+      Utility().showRefreshDialog(context);
+    }
     return Scaffold(
       body: Stack(
         children:  [

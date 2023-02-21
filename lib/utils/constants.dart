@@ -16,3 +16,5 @@ const String ISAUTHORIZED = "ISAUTHORIZED";
 const String ISLOGIN = "isLogined";
 const String UPDATE_PASSWORD = "Password Updated Successfully";
 const String SUCCESS = "Success";
+
+const String DEFAULT_USER = "hari.nikesh.r.cce@sece.ac.in";

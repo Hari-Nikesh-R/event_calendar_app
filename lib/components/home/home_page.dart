@@ -131,6 +131,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if(Utility().tokenRefreshed){
+      Utility().showRefreshDialog(context);
+    }
      return CalendarControllerProvider(
        controller: eventController,
        child:  MaterialApp(
@@ -195,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
                             },child: const Icon(Icons.person_outline))),
                             const Padding(padding: EdgeInsets.only(right: 12)),
-                            Visibility(visible: toggleMenu && userDetail?.email == "hari.nikesh.r.cce@sece.ac.in",child:
+                            Visibility(visible: toggleMenu && userDetail?.email == DEFAULT_USER,child:
                             FloatingActionButton(heroTag:"adminAuthority",backgroundColor: THEME_COLOR,onPressed: (){
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminPage()));
                             },child: const Icon(Icons.admin_panel_settings)))

@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:sece_event_calendar/dls/custombutton.dart';
+import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:sece_event_calendar/utils/colors.dart';
 
 import 'constants.dart';
@@ -12,7 +14,11 @@ class Utility{
     return _singleton;
   }
 
+  bool tokenRefreshed = false;
 
+  fetchRefreshToken() async{
+    await ApiInterface().getRefreshToken();
+  }
 
   String setDepartmentBackGround(String department) {
     switch (department) {
@@ -94,4 +100,27 @@ class Utility{
     }
   }
 
+  Future<Widget> showRefreshDialog(BuildContext context) async{
+    return await showDialog(context: context, builder: (BuildContext context) =>
+        SizedBox(
+            width: 200,
+            height: 200,
+            child: Padding(padding:const EdgeInsets.all(24),child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("title"),
+                Text("Description"),
+                DlsButton(text: "Refresh", onPressed: (){
+                  Utility().tokenRefreshed = false;
+                  Navigator.pop(context);
+                  (context as Element).reassemble();
+                })
+              ],
+            ),
+            )));
+
+  }
 }
+
+

@@ -366,6 +366,9 @@ class _EventPageState extends State<EventPage> {
 
   @override
   Widget build(BuildContext context) {
+    if(Utility().tokenRefreshed){
+      Utility().showRefreshDialog(context);
+    }
     return Scaffold(
       body: Stack(
         children: [

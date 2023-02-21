@@ -9,6 +9,7 @@ import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/constants.dart';
+import '../../utils/utility.dart';
 import 'home_page.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -47,6 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
   @override
   void initState() {
+
     setState(() {
       getUserDetails();
     });
@@ -75,6 +77,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
   @override
   Widget build(BuildContext context) {
+    if(Utility().tokenRefreshed){
+      Utility().showRefreshDialog(context);
+    }
     return Scaffold(
         body: Stack(
       children: [
