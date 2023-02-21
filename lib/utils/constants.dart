@@ -14,3 +14,5 @@ const String TRAINING = "TRAINING";
 const String TOKEN = "TOKEN";
 const String ISAUTHORIZED = "ISAUTHORIZED";
 const String ISLOGIN = "isLogined";
+const String UPDATE_PASSWORD = "Password Updated Successfully";
+const String SUCCESS = "Success";

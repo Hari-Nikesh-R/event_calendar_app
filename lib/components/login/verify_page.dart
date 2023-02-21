@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:sece_event_calendar/components/login/forgotpassword_page.dart';
 import 'package:sece_event_calendar/dls/custombutton.dart';
 import 'package:sece_event_calendar/model/userdetail.dart';
 import 'package:sece_event_calendar/service/api_interface.dart';
 
+import '../../utils/constants.dart';
 import 'login_page.dart';
 
 
 class VerifyPage extends StatefulWidget {
-  const VerifyPage({super.key, required this.details});
+  const VerifyPage({super.key, required this.details, required this.isForgotPassword});
   final UserDetail details;
+  final bool isForgotPassword;
 
   @override
   State<VerifyPage> createState() => _VerifyPageState();
@@ -21,10 +24,21 @@ class _VerifyPageState extends State<VerifyPage> {
   var otpField="";
   String? verificationMessage ;
 
+  void verifyCodeForForgotPassword(String code) async{
+     await ApiInterface().verifyForgotPasswordCode(widget.details.email,code).then((value){
+       if(value == SUCCESS){
+         setState(() {
+
+           Navigator.pushNamedAndRemoveUntil(context, "/change_password_page", ModalRoute.withName('/'));
+         });
+       }
+     });
+  }
+
   void verifyCode(UserDetail userDetail, String code) async{
     verificationMessage = await ApiInterface().verifyRegistrationCode(userDetail, code);
     debugPrint(verificationMessage);
-    if(verificationMessage == "Success")
+    if(verificationMessage == SUCCESS)
     {
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -38,12 +52,9 @@ class _VerifyPageState extends State<VerifyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        alignment: Alignment.center,
-        children: [
-      SingleChildScrollView(
+      body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        child: Column(
+        child: Container(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height,child:  Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children:  [
@@ -95,7 +106,12 @@ class _VerifyPageState extends State<VerifyPage> {
             ),
             Padding(padding:const EdgeInsets.only(top: 52),
               child: DlsButton(text: "VERIFY", onPressed: (){
-                verifyCode(widget.details, otpField);
+                if(widget.isForgotPassword) {
+                  verifyCodeForForgotPassword(otpField);
+                }
+                else{
+                  verifyCode(widget.details, otpField);
+                }
               }),),
             Padding(padding:const EdgeInsets.only(top: 32),
                 child: GestureDetector(
@@ -121,8 +137,7 @@ class _VerifyPageState extends State<VerifyPage> {
                         ),)
                     )))
           ],
-        ),
-      )],
-    ));
+        )),
+      ));
   }
 }

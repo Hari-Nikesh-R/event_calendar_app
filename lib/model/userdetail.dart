@@ -10,10 +10,10 @@ class UserDetail {
   UserDetail({
     this.email,
     this.profilePicture,
-    required this.firstName,
-    required this.lastName,
-    required this.organization,
-    required this.phoneNumber,
+    this.firstName,
+    this.lastName,
+    this.organization,
+    this.phoneNumber,
     this.password,
     this.organizationalAddress,
     this.authority,
@@ -21,10 +21,10 @@ class UserDetail {
 
   String? email;
   String? profilePicture;
-  String firstName;
-  String lastName;
-  String organization;
-  String phoneNumber;
+  String? firstName;
+  String? lastName;
+  String? organization;
+  String? phoneNumber;
   String? password;
   dynamic organizationalAddress;
   bool? authority;

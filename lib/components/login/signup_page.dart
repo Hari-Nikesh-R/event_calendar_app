@@ -107,7 +107,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     );
                     registerUser(userDetail);
                     Navigator.push(context, MaterialPageRoute(builder: (
-                        context) => VerifyPage(details: userDetail)));
+                        context) => VerifyPage(details: userDetail, isForgotPassword: false,)));
                   }
                   else{
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
