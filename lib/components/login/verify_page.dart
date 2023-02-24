@@ -28,9 +28,17 @@ class _VerifyPageState extends State<VerifyPage> {
      await ApiInterface().verifyForgotPasswordCode(widget.details.email,code).then((value){
        if(value == SUCCESS){
          setState(() {
-
-           Navigator.pushNamedAndRemoveUntil(context, "/change_password_page", ModalRoute.withName('/'));
-         });
+           Navigator.pushAndRemoveUntil<void>(
+             context,
+             MaterialPageRoute<void>(
+                 builder: (BuildContext context) =>  ChangePasswordPage(email: widget.details.email,)),
+             ModalRoute.withName("/home_page"),
+           );         });
+       }
+       else{
+         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+             content: Text("Invalid Code"
+             )));
        }
      });
   }

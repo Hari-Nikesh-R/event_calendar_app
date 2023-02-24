@@ -46,7 +46,7 @@ class _EventPageState extends State<EventPage> {
     DropdownMenuItem(value: "TRAINING", child: Text(TRAINING)),
   ];
 
-  List<String> venues = ["Placement Lab","Auditorium 1","Auditorium 2","IT center","Placement Cell","Conference Hall","Ignite GroundFloor","Respective Department"];
+  List<String> venues = [PLACEMENT_LAB,AUDITORIUM_1,AUDITORIUM_2,IT_CENTER,PLACEMENT_CELL,CONFERENCE_HALL,IGNITE_GROUND_FLOOR,RESPECTIVE_DEPARTMENT,IOT_LAB,LIBRARY,EEE_LAB, OPEN_AUDITORIUM];
   var homePage;
 
   String currentTime = "-";
@@ -350,7 +350,7 @@ class _EventPageState extends State<EventPage> {
         child:
      ListView.builder(
         shrinkWrap: true,
-        itemCount: 5,
+        itemCount: venues.length,
         itemBuilder: (BuildContext context, int index) {
             return  ListTile(
             title: Text(venues[index]),
@@ -515,7 +515,7 @@ class _EventPageState extends State<EventPage> {
                             GestureDetector(
                                 onTap: (){
                                   setState(() {
-                                    selectEndDate();
+                                  //  selectEndDate();
                                   });
                                 },
                                 child:Card(

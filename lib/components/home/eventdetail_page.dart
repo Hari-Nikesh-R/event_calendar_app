@@ -61,7 +61,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
   }
   @override
   void initState() {
-    // TODO: implement initState
     setState(() {
       getCalendarDetail(widget.title??"", widget.description??"", widget.department);
     });
@@ -118,16 +117,17 @@ class _EventDetailPageState extends State<EventDetailPage> {
                   child: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: 300,
-                //   child:
-                // Container(
-                //   decoration: const BoxDecoration(
-                //     image: DecorationImage(
-                //       image: AssetImage(
-                //         ""
-                //       ),fit: BoxFit.cover
-                //     )
-                //   ),
-                // )
+                  child:
+                Container(
+                  margin: const EdgeInsets.all(20),
+                  decoration:  BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                        Utility().getVenueImage(event?.location??"")
+                      ),fit: BoxFit.cover
+                    )
+                  ),
+                )
                    )),
                   CustomCardView(title: "Event Title", data: event?.title??""),
                   CustomCardView(title: "Venue", data: event?.location??""),

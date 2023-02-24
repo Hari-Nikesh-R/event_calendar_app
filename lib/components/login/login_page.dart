@@ -8,6 +8,8 @@ import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:sece_event_calendar/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../utils/utility.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -27,8 +29,6 @@ class _LoginPageState extends State<LoginPage> {
 
   void authenticateUserApi() async{
     String token  = await ApiInterface().authenticate(emailField.text, passwordField.text);
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString("Email", emailField.text);
     try {
     debugPrint("Token: $token");
       if (token == "false") {
