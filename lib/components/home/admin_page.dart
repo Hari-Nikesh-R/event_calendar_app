@@ -37,9 +37,6 @@ class _AdminPageState extends State<AdminPage> {
 
   @override
   Widget build(BuildContext context) {
-    if(Utility().tokenRefreshed){
-      Utility().showRefreshDialog(context);
-    }
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       body: Stack(

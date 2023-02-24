@@ -23,30 +23,30 @@ class Utility{
   String setDepartmentBackGround(String department) {
     switch (department) {
       case CCE:
-        return "assets/eventbg/ccebg.png";
+        return "$DEPARTMENT_PREFIX/ccebg.png";
       case ECE:
-        return "assets/eventbg/ecebg.png";
+        return "$DEPARTMENT_PREFIX/ecebg.png";
       case CSE:
-        return "assets/eventbg/csebg.png";
+        return "$DEPARTMENT_PREFIX/csebg.png";
       case MECH:
-        return "assets/eventbg/mechbg.png";
+        return "$DEPARTMENT_PREFIX/mechbg.png";
       case PLACEMENT:
-        return "assets/eventbg/placementbg.png";
+        return "$DEPARTMENT_PREFIX/placementbg.png";
       case EEE:
-        return "assets/eventbg/eeebg.png";
+        return "$DEPARTMENT_PREFIX/eeebg.png";
       case ADMIN:
-        return "assets/eventbg/placementbg.png";
+        return "$DEPARTMENT_PREFIX/placementbg.png";
       case TRAINING:
-        return "assets/eventbg/trainingbg.png";
+        return "$DEPARTMENT_PREFIX/trainingbg.png";
       default:
-        return "assets/eventbg/trainingbg.png";
+        return "$DEPARTMENT_PREFIX/trainingbg.png";
     }
   }
 
   Color setDepartmentColor(String selectedDepartment){
     switch(selectedDepartment){
       case CCE:
-        return  Colors.purpleAccent;
+        return Colors.purpleAccent;
       case ECE:
         return Colors.blue;
       case CSE:
@@ -97,6 +97,37 @@ class Utility{
     }
     else{
       return "RANDOM";
+    }
+  }
+
+  String getVenueImage(String venue) {
+    switch(venue){
+      case PLACEMENT_CELL:
+        return "$VENUE_PREFIX/placement_cell.png";
+      case PLACEMENT_LAB:
+        return "$VENUE_PREFIX/department.png";
+      case AUDITORIUM_1:
+        return "$VENUE_PREFIX/auditoriumi.png";
+      case AUDITORIUM_2:
+        return "$VENUE_PREFIX/auditoriumii.png";
+      case IT_CENTER:
+        return "$VENUE_PREFIX/itcenter.png";
+      case CONFERENCE_HALL:
+        return "$VENUE_PREFIX/conference_hall.png";
+      case IGNITE_GROUND_FLOOR:
+        return "$VENUE_PREFIX/ignite_center.jpeg";
+      case RESPECTIVE_DEPARTMENT:
+        return "$VENUE_PREFIX/department.png";
+      case LIBRARY:
+        return "$VENUE_PREFIX/library.png";
+      case EEE_LAB:
+        return "$VENUE_PREFIX/eee_lab.png";
+      case IOT_LAB:
+        return "$VENUE_PREFIX/iot_lab.png";
+      case OPEN_AUDITORIUM:
+        return "$VENUE_PREFIX/open_auditorium.jpg";
+      default:
+        return "$VENUE_PREFIX/department.png";
     }
   }
 

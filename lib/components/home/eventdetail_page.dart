@@ -70,9 +70,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
   
   @override
   Widget build(BuildContext context) {
-    if(Utility().tokenRefreshed){
-      Utility().showRefreshDialog(context);
-    }
     return Scaffold(
       body: Stack(
         children:  [
@@ -120,16 +117,17 @@ class _EventDetailPageState extends State<EventDetailPage> {
                   child: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: 300,
-                //   child:
-                // Container(
-                //   decoration: const BoxDecoration(
-                //     image: DecorationImage(
-                //       image: AssetImage(
-                //         ""
-                //       ),fit: BoxFit.cover
-                //     )
-                //   ),
-                // )
+                  child:
+                Container(
+                  margin: const EdgeInsets.all(20),
+                  decoration:  BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                        Utility().getVenueImage(event?.location??"")
+                      ),fit: BoxFit.cover
+                    )
+                  ),
+                )
                    )),
                   CustomCardView(title: "Event Title", data: event?.title??""),
                   CustomCardView(title: "Venue", data: event?.location??""),

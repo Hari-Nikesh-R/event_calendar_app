@@ -131,9 +131,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if(Utility().tokenRefreshed){
-      Utility().showRefreshDialog(context);
-    }
      return CalendarControllerProvider(
        controller: eventController,
        child:  MaterialApp(

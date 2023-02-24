@@ -77,9 +77,6 @@ class _ProfilePageState extends State<ProfilePage> {
   }
   @override
   Widget build(BuildContext context) {
-    if(Utility().tokenRefreshed){
-      Utility().showRefreshDialog(context);
-    }
     return Scaffold(
         body: Stack(
       children: [

@@ -89,9 +89,6 @@ class ApiInterface{
         prefs.setString("Email", email);
         return token;
       }
-      else if(response.statusCode ==401) {
-        getRefreshToken();
-      }
     }
     catch(e){
       debugPrint(e.toString());
@@ -163,20 +160,21 @@ class ApiInterface{
   }
 
   Future<void> getRefreshToken() async{
-    String token = "";
+    String message = "";
     try{
       Client client = Client();
       final prefs = await SharedPreferences.getInstance();
+      var token = "Bearer ${prefs.getString(TOKEN)}";
       var response = await client.get(Uri.parse("$AUTHENTICATION_URL/refreshtoken"), headers: {
         "Accept": "application/json",
         "content-type": "application/json",
-        "Authorization": "Bearer ${prefs.getString(TOKEN)}",
+        "Authorization": token,
         "isRefreshToken": "true"
       });
       if(response.statusCode == 200){
         Map<String, dynamic>? map = json.decode(response.body);
-        token = map?["token"];
-        prefs.setString(TOKEN, token);
+        message = map?["token"];
+        prefs.setString(TOKEN, message);
         Utility().tokenRefreshed = true;
         debugPrint("Token fetched and added");
       }
