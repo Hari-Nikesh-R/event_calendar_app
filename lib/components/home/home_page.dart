@@ -43,12 +43,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   getUserDetails() async {
+
     userDetail = await ApiInterface().getUserDetails();
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       userDetail = userDetail;
       prefs.setBool(ISAUTHORIZED, userDetail?.authority??false);
     });
+
   }
   bool createVisibility(){
     return userDetail?.authority??false;

@@ -4,8 +4,10 @@ import 'package:sece_event_calendar/dls/custombutton.dart';
 import 'package:sece_event_calendar/dls/customcartview.dart';
 import 'package:sece_event_calendar/dls/customedittext.dart';
 import 'package:sece_event_calendar/dls/customeventicon.dart';
+import 'package:sece_event_calendar/dls/loader.dart';
 import 'package:sece_event_calendar/model/userdetail.dart';
 import 'package:sece_event_calendar/service/api_interface.dart';
+import 'package:sece_event_calendar/utils/sessions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/constants.dart';
@@ -33,7 +35,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
 
   updateProfile(UserDetail detail) async{
-    userDetail = await ApiInterface().updateProfile(detail);
+     Sessions().startLoader(context);
+    userDetail = await ApiInterface().updateProfile(detail).whenComplete(() => Sessions().stopLoader(context));
     setState(() {
       userDetail = userDetail;
     });
