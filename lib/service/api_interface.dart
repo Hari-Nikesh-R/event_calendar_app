@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../model/calendar_event.dart';
 import '../model/userdetail.dart';
 import '../utils/constants.dart';
+import '../utils/sessions.dart';
 
 class ApiInterface{
   Future<String?> registerUser(UserDetail userDetail) async{
@@ -348,6 +349,7 @@ class ApiInterface{
         Map<String, dynamic>? map = json.decode(response.body);
         bool success = map?["success"];
         if (success) {
+          Sessions().loaderOverRelay = false;
           List<dynamic>? res = map?["value"];
           res?.forEach((element) {
             authority.add(authorityFromJsonWithDecode(element));
@@ -380,6 +382,7 @@ class ApiInterface{
         Map<String, dynamic>? map = json.decode(response.body);
         bool success = map?["success"];
         if (success) {
+          Sessions().loaderOverRelay = false;
           userDetail = userDetailFromJsonDecode(map?["value"]);
           return userDetail;
         }
@@ -412,6 +415,7 @@ class ApiInterface{
         Map<String, dynamic>? map = json.decode(response.body);
         bool success = map?["success"];
         if(success) {
+          Sessions().loaderOverRelay = false;
           CalendarEvent res = calendarEventFromJsonWithDecode(map?["value"]);
           debugPrint(res.toJson().toString());
           return res;
@@ -439,6 +443,7 @@ class ApiInterface{
         Map<String, dynamic>? map = json.decode(response.body);
         bool success = map?["success"];
         if(success) {
+          Sessions().loaderOverRelay = false;
           return map?["value"];
         }
       }
@@ -480,6 +485,7 @@ class ApiInterface{
         Map<String, dynamic>? map = json.decode(response.body);
         bool success = map?["success"];
         if (success) {
+          Sessions().loaderOverRelay = false;
           CalendarEvent res = calendarEventFromJsonWithDecode(map?["value"]);
           debugPrint(res.toJson().toString());
           return res;
@@ -532,6 +538,7 @@ class ApiInterface{
           Map<String, dynamic>? map = json.decode(response.body);
           bool success = map?["success"];
           if(success) {
+            Sessions().loaderOverRelay = false;
             return map?["value"];
           }
           else{

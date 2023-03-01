@@ -4,7 +4,6 @@ import 'package:sece_event_calendar/dls/custombutton.dart';
 import 'package:sece_event_calendar/dls/customcartview.dart';
 import 'package:sece_event_calendar/dls/customedittext.dart';
 import 'package:sece_event_calendar/dls/customeventicon.dart';
-import 'package:sece_event_calendar/dls/loader.dart';
 import 'package:sece_event_calendar/model/userdetail.dart';
 import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:sece_event_calendar/utils/sessions.dart';
@@ -35,8 +34,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
 
   updateProfile(UserDetail detail) async{
-     Sessions().startLoader(context);
-    userDetail = await ApiInterface().updateProfile(detail).whenComplete(() => Sessions().stopLoader(context));
+    Sessions().loaderOverRelay = true;
+    userDetail = await ApiInterface().updateProfile(detail);
     setState(() {
       userDetail = userDetail;
     });
@@ -44,6 +43,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   UserDetail? userDetail;
   getUserDetails() async{
+    Sessions().loaderOverRelay = true;
     userDetail = await ApiInterface().getUserDetails();
     setState(() {
       userDetail = userDetail;
@@ -51,7 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
   @override
   void initState() {
-
+    Sessions().loaderOverRelay = true;
     setState(() {
       getUserDetails();
     });
@@ -89,6 +89,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   image: AssetImage("assets/home/profilebg.png"),
                   fit: BoxFit.fill)),
         ),
+
         GestureDetector(
           onTap: (){
             Navigator.pushAndRemoveUntil<void>(
@@ -255,6 +256,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         radius: 75,
                         backgroundImage: NetworkImage(
                             'https://www.tutorialkart.com/img/hummingbird.png'))))),
+        Sessions().loaderOverRelay? Sessions().startLoader(context) : const Padding(padding: EdgeInsets.zero),
+       //     Sessions().startLoader(context)
       ],
     ));
   }

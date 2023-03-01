@@ -6,6 +6,7 @@ import 'package:sece_event_calendar/model/authority.dart';
 import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:sece_event_calendar/utils/colors.dart';
 
+import '../../utils/sessions.dart';
 import '../../utils/utility.dart';
 
 
@@ -23,6 +24,7 @@ class _AdminPageState extends State<AdminPage> {
   TextEditingController searchField = TextEditingController();
 
   getAllUserAuthority() async{
+    Sessions().loaderOverRelay = true;
     authorityList = await ApiInterface().getUserAuthority();
     setState(() {
       authorityList = authorityList;
@@ -73,6 +75,7 @@ class _AdminPageState extends State<AdminPage> {
             return UserListCard(authority: authorityList?[index]);
           })
           ):const Padding(padding: EdgeInsets.symmetric(vertical: 100)),
+          Sessions().loaderOverRelay? Sessions().startLoader(context) : const Padding(padding: EdgeInsets.zero),
         ]
       )
     );
@@ -94,6 +97,7 @@ class _UserListCardState extends State<UserListCard> {
   String? updateMessage;
 
   updateAuthority(bool authorized) async{
+    Sessions().loaderOverRelay = true;
     debugPrint(widget.authority?.email??""+ " "+authorized.toString());
    updateMessage = await ApiInterface().updateAuthority(widget.authority?.email??"",authorized);
    debugPrint(updateMessage);

@@ -8,6 +8,7 @@ import 'package:sece_event_calendar/utils/colors.dart';
 import 'package:sece_event_calendar/utils/constants.dart';
 
 import '../../model/calendar_event.dart';
+import '../../utils/sessions.dart';
 import '../../utils/utility.dart';
 
 class EventPage extends StatefulWidget {
@@ -55,6 +56,7 @@ class _EventPageState extends State<EventPage> {
   String? editedEventMessage ="";
 
   saveEvent(CalendarEvent calendarEvent) async{
+    Sessions().loaderOverRelay = true;
      addedEvent = await ApiInterface().addEvent(calendarEvent).whenComplete(() =>  setState(() {
        if(calendarEvent.error?.isEmpty??true) {
          Navigator.pushAndRemoveUntil<void>(
@@ -76,6 +78,7 @@ class _EventPageState extends State<EventPage> {
   }
 
   editEvent(CalendarEvent? calendarEvent) async{
+    Sessions().loaderOverRelay = true;
     editedEventMessage = await ApiInterface().editEvent(calendarEvent).whenComplete(() =>  setState(() {
       if(calendarEvent?.error?.isEmpty??true) {
         Navigator.pushAndRemoveUntil<void>(
@@ -660,7 +663,8 @@ class _EventPageState extends State<EventPage> {
                   )
                 ],
               ),
-            )
+            ),
+          Sessions().loaderOverRelay? Sessions().startLoader(context) : const Padding(padding: EdgeInsets.zero),
         ],
       ),
     );
