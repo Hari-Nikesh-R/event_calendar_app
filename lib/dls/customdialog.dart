@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../components/home/home_page.dart';
 import '../model/calendar_event.dart';
 import '../service/api_interface.dart';
+import '../utils/sessions.dart';
 
 
 
@@ -27,8 +28,10 @@ class CustomCupertinoAlertDialog {
   }
 
   actionButtonFunctionality(){
+
     switch(function){
       case "DELETE_EVENT":
+        Sessions().loaderOverRelay = true;
         deleteEventApi(calendarEvent);
         break;
     }

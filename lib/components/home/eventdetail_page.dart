@@ -8,6 +8,8 @@ import 'package:sece_event_calendar/model/calendar_event.dart';
 import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:sece_event_calendar/utils/utility.dart';
 
+import '../../utils/sessions.dart';
+
 class EventDetailPage extends StatefulWidget {
   const EventDetailPage({super.key, this.title, this.description, required this.department});
   final String? title;
@@ -54,6 +56,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
   }
   CalendarEvent? event;
   getCalendarDetail(String title, String description, String department) async{
+    Sessions().loaderOverRelay = true;
     event = await ApiInterface().getCalendarDetail(title,description);
     setState(() {
         event = event;
@@ -138,7 +141,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
                  CustomCardView(title: "Created by", data: event?.createdBy??""),
               ],
             ),
-          ))
+          )),
+          Sessions().loaderOverRelay? Sessions().startLoader(context) : const Padding(padding: EdgeInsets.zero),
         ],
       ),
     );

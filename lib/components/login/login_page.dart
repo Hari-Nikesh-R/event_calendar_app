@@ -8,6 +8,7 @@ import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:sece_event_calendar/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../utils/sessions.dart';
 import '../../utils/utility.dart';
 
 class LoginPage extends StatefulWidget {
@@ -28,6 +29,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void authenticateUserApi() async{
+    Sessions().loaderOverRelay = true;
     String token  = await ApiInterface().authenticate(emailField.text, passwordField.text);
     try {
     debugPrint("Token: $token");
@@ -159,7 +161,8 @@ class _LoginPageState extends State<LoginPage> {
               ]
             ),
 
-          )
+          ),
+          Sessions().loaderOverRelay? Sessions().startLoader(context) : const Padding(padding: EdgeInsets.zero),
         ],
       ),
     );

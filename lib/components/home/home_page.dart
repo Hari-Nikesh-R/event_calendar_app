@@ -18,6 +18,7 @@ import '../../calendar_view/src/day_view/day_view.dart';
 import '../../calendar_view/src/event_controller.dart';
 import '../../calendar_view/src/month_view/month_view.dart';
 import '../../calendar_view/src/week_view/week_view.dart';
+import '../../utils/sessions.dart';
 import 'event_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -43,12 +44,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   getUserDetails() async {
+
     userDetail = await ApiInterface().getUserDetails();
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       userDetail = userDetail;
       prefs.setBool(ISAUTHORIZED, userDetail?.authority??false);
     });
+
   }
   bool createVisibility(){
     return userDetail?.authority??false;
@@ -56,6 +59,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    Sessions().loaderOverRelay = true;
     setState(() {
       getAllEvent();
     });
@@ -201,6 +205,7 @@ class _HomePageState extends State<HomePage> {
                             },child: const Icon(Icons.admin_panel_settings)))
                           ]
                         )),),
+               Sessions().loaderOverRelay? Sessions().startLoader(context) : const Padding(padding: EdgeInsets.zero),
              ],
            )
          ),
