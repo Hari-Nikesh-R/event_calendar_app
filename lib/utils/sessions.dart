@@ -11,6 +11,7 @@ class Sessions{
    }
 
    bool loaderOverRelay = false;
+   bool tokenRefreshed = false;
 
    Widget startLoader(BuildContext context) {
        return Container(

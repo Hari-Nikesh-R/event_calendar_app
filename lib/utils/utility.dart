@@ -14,8 +14,6 @@ class Utility{
     return _singleton;
   }
 
-  bool tokenRefreshed = false;
-
   fetchRefreshToken() async{
     await ApiInterface().getRefreshToken();
   }

@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:sece_event_calendar/components/home/home_page.dart';
+import 'package:sece_event_calendar/components/home/profile_page.dart';
 import 'package:sece_event_calendar/model/authority.dart';
 import 'package:sece_event_calendar/utils/urls.dart';
 import 'package:sece_event_calendar/utils/utility.dart';
@@ -176,7 +177,7 @@ class ApiInterface{
         Map<String, dynamic>? map = json.decode(response.body);
         message = map?["token"];
         prefs.setString(TOKEN, message);
-        Utility().tokenRefreshed = true;
+
         debugPrint("Token fetched and added");
       }
       else if(response.statusCode == 401){
