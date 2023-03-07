@@ -8,6 +8,7 @@ import 'package:sece_event_calendar/utils/colors.dart';
 import 'package:sece_event_calendar/utils/constants.dart';
 
 import '../../model/calendar_event.dart';
+import '../../utils/configuration_session.dart';
 import '../../utils/sessions.dart';
 import '../../utils/utility.dart';
 
@@ -338,11 +339,13 @@ class _EventPageState extends State<EventPage> {
     if(widget.event!=null) {
       initializeTextController(widget.event);
       editEventFlag = true;
-
     }
     else{
-      selectedDepartment = "CCE";
+      selectedDepartment = ADMIN;
     }
+    setState(() {
+      ConfigurationSession().venue = ConfigurationSession().venue;
+    });
     super.initState();
   }
 
@@ -353,12 +356,12 @@ class _EventPageState extends State<EventPage> {
         child:
      ListView.builder(
         shrinkWrap: true,
-        itemCount: venues.length,
+        itemCount: ConfigurationSession().venue.isNotEmpty?ConfigurationSession().venue.length:venues.length,
         itemBuilder: (BuildContext context, int index) {
             return  ListTile(
-            title: Text(venues[index]),
+            title: Text(ConfigurationSession().venue.isNotEmpty ? ConfigurationSession().venue[index]??venues[index]: venues[index]),
               onTap: (){
-                selectedVenue = venues[index];
+                selectedVenue = ConfigurationSession().venue.isNotEmpty ? ConfigurationSession().venue[index]??venues[index]: venues[index];
                 eventLocation.text = selectedVenue;
                 Navigator.pop(context);
               },

@@ -7,6 +7,7 @@ import 'package:http/http.dart';
 import 'package:sece_event_calendar/components/home/home_page.dart';
 import 'package:sece_event_calendar/components/home/profile_page.dart';
 import 'package:sece_event_calendar/model/authority.dart';
+import 'package:sece_event_calendar/model/configmodel.dart';
 import 'package:sece_event_calendar/utils/urls.dart';
 import 'package:sece_event_calendar/utils/utility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,6 +18,33 @@ import '../utils/constants.dart';
 import '../utils/sessions.dart';
 
 class ApiInterface{
+  Future<List<ConfigModel?>?> getConfigInfo() async{
+    var client = Client();
+    List<ConfigModel> configs = [];
+    try{
+      var response = await client.get(Uri.parse("$EVENT_BACKEND_URL/config"), headers: {
+        "Accept": "application/json",
+        "content-type": "application/json"
+      });
+      if(response.statusCode == 200){
+        Sessions().loaderOverRelay = false;
+        Map<String, dynamic>? map = json.decode(response.body);
+        List<dynamic>? res = map?["value"];
+        res?.forEach((element) {
+          configs.add(configModelFromJsonWithDecode(element));
+        });
+        return configs;
+      }
+      else if(response.statusCode>=500 && response.statusCode<=600){
+        //todo: Show error dialog
+        Sessions().loaderOverRelay = false;
+      }
+    }
+    catch(e){
+      debugPrint(e.toString());
+    }
+    return null;
+  }
   Future<String?> registerUser(UserDetail userDetail) async{
     String mailMessage = "";
     var client = Client();

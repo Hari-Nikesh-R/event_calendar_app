@@ -33,3 +33,5 @@ const String EEE_LAB = "EEE Lab";
 const String LIBRARY = "Library";
 const String OPEN_AUDITORIUM = "Open Auditorium";
 const String VENUE_PREFIX = "assets/eventvenue";
+const String VENUE = "venues";
+

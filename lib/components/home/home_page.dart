@@ -8,6 +8,7 @@ import 'package:sece_event_calendar/model/calendar_event.dart';
 import 'package:sece_event_calendar/model/userdetail.dart';
 import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:sece_event_calendar/utils/colors.dart';
+import 'package:sece_event_calendar/utils/configuration_session.dart';
 import 'package:sece_event_calendar/utils/constants.dart';
 import 'package:sece_event_calendar/utils/utility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -147,8 +148,7 @@ class _HomePageState extends State<HomePage> {
          ),
          home: Scaffold(
            floatingActionButton: Visibility(visible: createVisibility(),child: FloatingActionButton(heroTag: "create", onPressed: (){
-
-           Navigator.push(context, MaterialPageRoute(builder: (context) =>const EventPage()));
+             ConfigurationSession().fetchDataFromConfig().whenComplete(() =>  Navigator.push(context, MaterialPageRoute(builder: (context) =>const EventPage())));
              },
              backgroundColor: THEME_COLOR,
                child: const Icon(Icons.add,color: Colors.white)
