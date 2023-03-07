@@ -71,7 +71,7 @@ class _AdminPageState extends State<AdminPage> {
             ),
           )),
           (authorityList!=null)?
-          Padding(padding: const EdgeInsets.symmetric(vertical: 100), child: ListView.builder(itemCount:authorityList?.length, itemBuilder:  (context,index) {
+          Padding(padding: const EdgeInsets.only(top: 100), child: ListView.builder(itemCount:authorityList?.length, itemBuilder:  (context,index) {
             return UserListCard(authority: authorityList?[index]);
           })
           ):const Padding(padding: EdgeInsets.symmetric(vertical: 100)),
