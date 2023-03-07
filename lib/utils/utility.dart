@@ -141,7 +141,6 @@ class Utility{
                 Text("title"),
                 Text("Description"),
                 DlsButton(text: "Refresh", onPressed: (){
-                  Utility().tokenRefreshed = false;
                   Navigator.pop(context);
                   (context as Element).reassemble();
                 })
