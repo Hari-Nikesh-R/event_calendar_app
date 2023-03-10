@@ -10,6 +10,11 @@ const String MECH = "MECH";
 const String ADMIN = "ADMIN";
 const String PLACEMENT = "PLACEMENT";
 const String TRAINING = "TRAINING";
+const String AIDS = "AIDS";
+const String CSBS = "CSBS";
+const String AIML = "AIML";
+const String SLC = "SLC";
+const String IT = "IT";
 const String DEPARTMENT_PREFIX = "assets/eventbg";
 
 const String TOKEN = "TOKEN";
@@ -20,7 +25,6 @@ const String SUCCESS = "Success";
 
 const String DEFAULT_USER = "hari.nikesh.r.cce@sece.ac.in";
 
-const String PLACEMENT_LAB = "Placement Lab";
 const String AUDITORIUM_1 = "Auditorium 1";
 const String AUDITORIUM_2 = "Auditorium 2";
 const String IT_CENTER = "IT center";
@@ -31,5 +35,16 @@ const String RESPECTIVE_DEPARTMENT = "Respective Department";
 const String IOT_LAB = "Iot Lab";
 const String EEE_LAB = "EEE Lab";
 const String LIBRARY = "Library";
+const String HCL = "HCL";
+const String WIPRO = "Wipro Lab";
+const String PROJECT_LAB = "Project Lab";
+const String BYTES_LAB = "Bytes Lab";
+const String VIRTUSA = "Virtusa";
+const String ONE_CLOUD = "One Cloud";
+const String AWS = "AWS Lab";
+const String ASPIRE_SYSTEM = "Aspire System";
+const String SYSTENIX = "Sysnautix";
+const String CODE_STUDIO = "Code Studio";
+const String POWER_SIMULATION = "Power Simulation Lab";
 const String OPEN_AUDITORIUM = "Open Auditorium";
 const String VENUE_PREFIX = "assets/eventvenue";

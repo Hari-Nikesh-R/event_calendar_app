@@ -24,8 +24,6 @@ class _EventPageState extends State<EventPage> {
   TextEditingController eventDescription = TextEditingController();
   TextEditingController eventAnnouncement = TextEditingController();
   TextEditingController eventLocation = TextEditingController();
-  bool notifyAll = true;
-  bool notifyIndividual = true;
   String currentDate = "-";
   String endDate = "-";
   DateTime? selectedStartDate;
@@ -37,17 +35,22 @@ class _EventPageState extends State<EventPage> {
   bool editEventFlag = false;
 
   List<DropdownMenuItem<String>> dropdownItems = const [
-    DropdownMenuItem(value: "CCE", child: Text(CCE)),
-    DropdownMenuItem(value: "CSE", child: Text(CSE)),
-    DropdownMenuItem(value: "ECE", child: Text(ECE)),
-    DropdownMenuItem(value: "EEE", child: Text(EEE)),
-    DropdownMenuItem(value: "MECH", child: Text(MECH)),
-    DropdownMenuItem(value: "PLACEMENT", child: Text(PLACEMENT)),
-    DropdownMenuItem(value: "ADMIN", child: Text(ADMIN)),
-    DropdownMenuItem(value: "TRAINING", child: Text(TRAINING)),
+    DropdownMenuItem(value: CCE, child: Text(CCE)),
+    DropdownMenuItem(value: CSE, child: Text(CSE)),
+    DropdownMenuItem(value: ECE, child: Text(ECE)),
+    DropdownMenuItem(value: EEE, child: Text(EEE)),
+    DropdownMenuItem(value: MECH, child: Text(MECH)),
+    DropdownMenuItem(value: PLACEMENT, child: Text(PLACEMENT)),
+    DropdownMenuItem(value: AIDS, child: Text(AIDS)),
+    DropdownMenuItem(value: CSBS, child: Text(CSBS)),
+    DropdownMenuItem(value: AIML, child: Text(AIML)),
+    DropdownMenuItem(value: IT, child: Text(IT)),
+    DropdownMenuItem(value: ADMIN, child: Text(ADMIN)),
+    DropdownMenuItem(value: TRAINING, child: Text(TRAINING)),
+    DropdownMenuItem(value: SLC, child: Text(SLC)),
   ];
 
-  List<String> venues = [PLACEMENT_LAB,AUDITORIUM_1,AUDITORIUM_2,IT_CENTER,PLACEMENT_CELL,CONFERENCE_HALL,IGNITE_GROUND_FLOOR,RESPECTIVE_DEPARTMENT,IOT_LAB,LIBRARY,EEE_LAB, OPEN_AUDITORIUM];
+  List<String> venues = [ASPIRE_SYSTEM, AWS, ONE_CLOUD, SYSTENIX, VIRTUSA, BYTES_LAB, PROJECT_LAB, POWER_SIMULATION, CODE_STUDIO, HCL, AUDITORIUM_1, AUDITORIUM_2, IT_CENTER, PLACEMENT_CELL, CONFERENCE_HALL, IGNITE_GROUND_FLOOR,RESPECTIVE_DEPARTMENT,IOT_LAB,LIBRARY,EEE_LAB, OPEN_AUDITORIUM, WIPRO];
   var homePage;
 
   String currentTime = "-";
@@ -341,7 +344,7 @@ class _EventPageState extends State<EventPage> {
 
     }
     else{
-      selectedDepartment = "CCE";
+      selectedDepartment = ADMIN;
     }
     super.initState();
   }
@@ -424,7 +427,7 @@ class _EventPageState extends State<EventPage> {
                               value: selectedDepartment,
                               items: dropdownItems, onChanged: (String? value) {
                               setState(() {
-                                selectedDepartment = value??"CCE";
+                                selectedDepartment = value??ADMIN;
                                 if(widget.event!=null) {
                                     widget.event?.department = selectedDepartment;
                                   }
@@ -604,14 +607,8 @@ class _EventPageState extends State<EventPage> {
                   ),
                   )),
                   Row(
-                    children: [
-                       const Padding(padding: EdgeInsets.only(right: 8)),
-                      Checkbox(value: notifyAll, onChanged: (bool? value){
-                          setState(() {
-                            notifyAll = value!;
-                          });
-                      }),
-                      const Text("Notify All", style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black,fontSize: 20),)
+                    children:const [
+                        Padding(padding: EdgeInsets.only(right: 8)),
                     ],
                   ),
                   // Row(
@@ -640,7 +637,6 @@ class _EventPageState extends State<EventPage> {
                               eventStartDate: selectedStartDate,
                               eventEndDate: selectedEndDate,
                               location: eventLocation.text,
-                              notifyAll: notifyAll,
                               department: selectedDepartment,
                               eventType: eventAnnouncement.text);
                           saveEvent(calendarEvent);
@@ -654,7 +650,6 @@ class _EventPageState extends State<EventPage> {
                           calendarEvent?.description = eventDescription.text;
                           calendarEvent?.location= eventLocation.text;
                           calendarEvent?.eventType = eventAnnouncement.text;
-                          calendarEvent?.notifyAll = notifyAll;
                           editEvent(calendarEvent);
                           debugPrint("Edit Api Success");
                         }

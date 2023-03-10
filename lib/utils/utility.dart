@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sece_event_calendar/dls/custombutton.dart';
 import 'package:sece_event_calendar/service/api_interface.dart';
 import 'package:sece_event_calendar/utils/colors.dart';
+import 'package:sece_event_calendar/utils/sessions.dart';
 
 import 'constants.dart';
 
@@ -59,6 +60,16 @@ class Utility{
         return Colors.cyanAccent;
       case TRAINING:
         return Colors.redAccent;
+      case AIDS:
+        return Colors.lightGreen;
+      case CSBS:
+        return Colors.pinkAccent;
+      case AIML:
+        return Colors.deepOrangeAccent;
+      case SLC:
+        return Colors.lime;
+      case IT:
+        return Colors.purpleAccent;
       default:
         return THEME_COLOR;
     }
@@ -93,6 +104,21 @@ class Utility{
     else if(color == Colors.redAccent){
       return TRAINING;
     }
+    else if(color == Colors.lightGreen){
+      return AIDS;
+    }
+    else if(color ==Colors.pinkAccent){
+      return CSBS;
+    }
+    else if(color == Colors.deepOrangeAccent){
+      return AIML;
+    }
+    else if(color == Colors.lime){
+      return SLC;
+    }
+    else if(color == Colors.purpleAccent){
+      return IT;
+    }
     else{
       return "RANDOM";
     }
@@ -102,8 +128,6 @@ class Utility{
     switch(venue){
       case PLACEMENT_CELL:
         return "$VENUE_PREFIX/placement_cell.png";
-      case PLACEMENT_LAB:
-        return "$VENUE_PREFIX/department.png";
       case AUDITORIUM_1:
         return "$VENUE_PREFIX/auditoriumi.png";
       case AUDITORIUM_2:
@@ -124,8 +148,30 @@ class Utility{
         return "$VENUE_PREFIX/iot_lab.png";
       case OPEN_AUDITORIUM:
         return "$VENUE_PREFIX/open_auditorium.jpg";
+      case HCL:
+        return "$VENUE_PREFIX/hcl.png";
+      case WIPRO:
+        return "$VENUE_PREFIX/wipro.jpg";
+      case CODE_STUDIO:
+        return "$VENUE_PREFIX/code_studio.jpg";
+      case POWER_SIMULATION:
+        return "$VENUE_PREFIX/power_stimulation.jpg";
+      case PROJECT_LAB:
+        return "$VENUE_PREFIX/project_lab.jpg";
+      case BYTES_LAB:
+        return "$VENUE_PREFIX/bytes_lab.jpg";
+      case VIRTUSA:
+        return "$VENUE_PREFIX/virtusa.jpg";
+      case SYSTENIX:
+        return "$VENUE_PREFIX/systenix.jpg";
+      case ONE_CLOUD:
+        return "$VENUE_PREFIX/one_cloud.jpg";
+      case AWS:
+        return "$VENUE_PREFIX/aws_lab.jpg";
+      case ASPIRE_SYSTEM:
+        return "$VENUE_PREFIX/aspire_system.jpg";
       default:
-        return "$VENUE_PREFIX/department.png";
+        return "assets/loader/round_loader.gif";
     }
   }
 

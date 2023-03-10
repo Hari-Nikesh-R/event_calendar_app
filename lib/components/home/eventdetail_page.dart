@@ -123,15 +123,17 @@ class _EventDetailPageState extends State<EventDetailPage> {
                   child:
                 Container(
                   margin: const EdgeInsets.all(20),
-                  decoration:  BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                        Utility().getVenueImage(event?.location??"")
-                      ),fit: BoxFit.cover
-                    )
-                  ),
+                  // decoration:  BoxDecoration(
+                  //   image: DecorationImage(
+                  //     image:  AssetImage(
+                  //       Utility().getVenueImage(event?.location??"")
+                  //     ),fit: BoxFit.cover
+                  //   )
+                  // ),
+                  child: FadeInImage(placeholder: const AssetImage("assets/loader/round_loader.gif"),image:  AssetImage(
+    Utility().getVenueImage(event?.location??""),),fit: BoxFit.cover,
                 )
-                   )),
+                   ))),
                   CustomCardView(title: "Event Title", data: event?.title??""),
                   CustomCardView(title: "Venue", data: event?.location??""),
                  CustomCardView(title: "Description", data: event?.description??""),
